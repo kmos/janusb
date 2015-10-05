@@ -1,0 +1,9 @@
+/.metadata/
+Debug/
+Doc/
+Release/
+RemoteSystemsTempFiles/
+*.doxyfile
+
+
+

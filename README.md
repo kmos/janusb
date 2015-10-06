@@ -1,7 +1,25 @@
-# janusb
+#Janusb - Serial Port Plugin for Janus Gateway
 
-janus plugin for comunication on usb serial port
+*****
 
-#Requirements
+Janusb provides a very simple interface to the low level serial port code necessary to program Arduino chipsets, St MicroControllers and all the IoT.
 
-#installation
+*****
+
+
+Janususb, Why?
+================
+Why not! 
+
+
+How To Use
+==========
+
+
+To Install
+----------
+
+To Use
+------
+
+

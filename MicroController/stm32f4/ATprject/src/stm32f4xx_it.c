@@ -175,12 +175,12 @@ void SysTick_Handler(void)
   * @retval None
   */
 
-void EXTI0_IRQHandler(void){
-	if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0) != RESET){
-		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
-		button_pressed();
-	}
-}
+//void EXTI0_IRQHandler(void){
+//	if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0) != RESET){
+//		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
+//		button_pressed();
+//	}
+//}
 
 /**
   * @brief  OTG_FS_IRQHandler

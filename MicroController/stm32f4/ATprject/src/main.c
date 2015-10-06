@@ -42,13 +42,19 @@ uint8_t isLoop();
 void finalize();
 void button_pressed();
 
-int interr=0;
+
+jsmn_parser parser;
+/* Whole response*/
+char response[1024];
+jsmntok_t tokens[256];
+
 
 USBD_HandleTypeDef USBD_Device;
 
 Button_TypeDef bt;
 ButtonMode_TypeDef btm;
 uint8_t * receiving_buffer;
+uint8_t jstring[256];
 
 int main(){
 	setup();
@@ -74,36 +80,38 @@ void setup(){
 	BSP_LED_Init(3);
 
 	receiving_buffer = malloc((int)1);
+	memset(response, '\0', sizeof response);
+	jsmn_init(&parser);
 
-//	bt = BUTTON_KEY;
-//	btm = BUTTON_MODE_EXTI;
-//	BSP_PB_Init(bt, btm);
 }
 
 void loop(){
- 	if(VCP_read(receiving_buffer, 1)!=0){
-		VCP_write("t", 1);
-		if((*receiving_buffer)=='k'){
-			BSP_LED_Toggle(LED3);
-		}else{
-			BSP_LED_Toggle(LED4);
-		}
+
+	char buf = '\0';
+	int spot = 0;
+	jsmnerr_t r;
+	while(VCP_read(&buf,1) != 0){
+	  BSP_LED_On(LED4);
+	  if(buf == '\n'){
+		  BSP_LED_Off(LED4);
+		  r = jsmn_parse(&parser, response,strlen(response), tokens, 256);
+		  for (int i=0;i<2;i++){
+			  VCP_write(&tokens[i],sizeof(tokens[i]));
+		  }
+
+		  break;
+	  }
+	  sprintf(&response[spot], "%c", buf );
+	  spot += 1;
 	}
 
+	BSP_LED_On(LED3);
 }
 
 uint8_t isLoop(){
 	return 1;
 }
 
-void button_pressed(){
-	interr++;
-	BSP_LED_On(interr%4);
-	BSP_LED_Off(interr%4-1);
-	VCP_write("scrivo",6);
-
-
-}
 
 void finalize(){
 	//Deinizializza

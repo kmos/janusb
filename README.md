@@ -19,6 +19,8 @@ How To Use
 To Install
 ----------
 
+Installation
+
 To Use
 ------
 

@@ -9,6 +9,7 @@
 #include <USBD_CDC.h>
 #include "diag/Trace.h"
 #include "stm32f4_discovery.h"
+#include "jsmn.h"
 
 
 #include "usbd_core.h"

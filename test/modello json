@@ -1,13 +1,25 @@
 
 Command from server
 {
-	"command" : "read"/"stop"/"write"(only acctuator),
-	"ID" : ID(intero),
+	"command" : "read"/"on"/"off",
+	"id" : int,
 }
+
+Leggenda ID:
+
+	* 1 -> accelerometro
+	* 2 -> temperatura
+	* 3 -> LED3
+	* 4 -> LED4
+	* 5 -> LED5
+	* 6 -> LED6
+
+	
 
 
 Answer to server
 {
-	"OpStatus" : "Ok"/"Er",
-	"Measure"  : misura(float/intero) (in caso di errore si può mettere un codice)
+	"opstatus" : "Ok"/"Er",
+	"measure"  : misura(float/intero) (in caso di errore si può mettere un codice)
+	"type"	  : "celsius"/"kelvin","XYZ"
 }

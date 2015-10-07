@@ -67,7 +67,7 @@ static janus_plugin janus_serial_plugin =
 
 		.get_api_compatibility = janus_serial_get_api_compatibility,
 		.get_version = janus_serial_get_version,
-		.get_version_string = janus_echotest_get_version_string,
+		.get_version_string = janus_serial_get_version_string,
 		.get_description = janus_serial_get_description,
 		.get_name = janus_serial_get_name,
 		.get_author = janus_serial_get_author,
@@ -164,7 +164,7 @@ void *janus_serial_watchdog(void *data) {
 			GList *sl = old_sessions;
 			JANUS_LOG(LOG_HUGE, "Checking %d old Serial sessions...\n", g_list_length(old_sessions));
 			while(sl) {
-				janus_echotest_session *session = (janus_echotest_session *)sl->data;
+				janus_serial_session *session = (janus_serial_session *)sl->data;
 				if(!session) {
 					sl = sl->next;
 					continue;
@@ -222,14 +222,14 @@ int janus_serial_init(janus_callbacks *callback, const char *config_path) {
 
 	GError *error = NULL;
 	/* Start the sessions watchdog */
-	watchdog = g_thread_try_new("serial watchdog", &janus_echotest_watchdog, NULL, &error);
+	watchdog = g_thread_try_new("serial watchdog", &janus_serial_watchdog, NULL, &error);
 	if(error != NULL) {
 		g_atomic_int_set(&initialized, 0);
 		JANUS_LOG(LOG_ERR, "Got error %d (%s) trying to launch the Serial watchdog thread...\n", error->code, error->message ? error->message : "??");
 		return -1;
 	}
 	/* Launch the thread that will handle incoming messages */
-	handler_thread = g_thread_try_new("janus serial handler", janus_echotest_handler, NULL, &error);
+	handler_thread = g_thread_try_new("janus serial handler", janus_serial_handler, NULL, &error);
 	if(error != NULL) {
 		g_atomic_int_set(&initialized, 0);
 		JANUS_LOG(LOG_ERR, "Got error %d (%s) trying to launch the serial handler thread...\n", error->code, error->message ? error->message : "??");
@@ -344,7 +344,7 @@ const char *janus_serial_get_name(void) {
 }
 
 const char *janus_serial_get_author(void) {
-	return JANUS_serial_AUTHOR;
+	return JANUS_SERIAL_AUTHOR;
 }
 
 const char *janu_serial_get_package(void) {
@@ -468,7 +468,7 @@ void janus_serial_setup_media(janus_plugin_session *handle) {
 	JANUS_LOG(LOG_INFO, "WebRTC media is now available\n");
 	if(g_atomic_int_get(&stopping) || !g_atomic_int_get(&initialized))
 		return;
-	janus_echotest_session *session = (janus_echotest_session *)handle->plugin_handle;	
+	janus_serial_session *session = (janus_serial_session *)handle->plugin_handle;	
 	if(!session) {
 		JANUS_LOG(LOG_ERR, "No session associated with this handle...\n");
 		return;
@@ -509,7 +509,7 @@ void janus_serial_incoming_rtcp(janus_plugin_session *handle, int video, char *b
 		return;
 	/* Simple echo test */
 	if(gateway) {
-		janus_echotest_session *session = (janus_echotest_session *)handle->plugin_handle;	
+		janus_serial_session *session = (janus_serial_session *)handle->plugin_handle;	
 		if(!session) {
 			JANUS_LOG(LOG_ERR, "No session associated with this handle...\n");
 			return;

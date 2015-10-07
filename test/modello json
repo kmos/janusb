@@ -1,0 +1,13 @@
+
+Command from server
+{
+	"command" : "read"/"stop"/"write"(only acctuator),
+	"ID" : ID(intero),
+}
+
+
+Answer to server
+{
+	"OpStatus" : "Ok"/"Er",
+	"Measure"  : misura(float/intero) (in caso di errore si può mettere un codice)
+}

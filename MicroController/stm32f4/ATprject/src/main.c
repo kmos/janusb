@@ -43,15 +43,16 @@ void loop(){
 	Comand receivedcomand;
 	//Reading cycle
 	while(VCP_read(&buf,1) != 0){
-	  if(buf == '\n'){
-		  p_code = parsing(&receivedcomand);
-		  execComand(receivedcomand);
-		  if(p_code == 1){/*ERRORE NEL PARSING DA GESTIRE*/ }
-		  break;
-	  }
+		if(buf == '\n'){
+			p_code = parsing(&receivedcomand);
+			execComand(receivedcomand);
+			if(p_code == 1){/*ERRORE NEL PARSING DA GESTIRE*/ }
+			break;
+		}
 	  sprintf(&response[spot], "%c", buf );
 	  spot += 1;
 	}
+	//Qua ci va il codice per le letture periodiche se ci riesco a implementarle.
 }
 //Parsing the message and execute commands
 int  parsing (Comand *received)
@@ -92,11 +93,6 @@ int  parsing (Comand *received)
 				free(store);
 				i++;
 				break;
-			case JSMN_PRIMITIVE:
-				//strncpy(value,&response[tokens[i].start],tokens[i].end-tokens[i].start);
-				break;
-			case JSMN_ARRAY:
-				break;
 		}
 	}
 	//Devo liberare le risorse so sicuro
@@ -104,12 +100,12 @@ int  parsing (Comand *received)
 }
 
 void execComand(Comand received){
-	if(strcmp(received.name,"On") == 0){
+	if(strcmp(received.name,"on") == 0){
 		if(received.ID == 3) BSP_LED_On(LED3);
 		if(received.ID == 4) BSP_LED_On(LED4);
 		if(received.ID == 5) BSP_LED_On(LED5);
 		if(received.ID == 6) BSP_LED_On(LED6);
-	}else if(strcmp(received.name,"Off") == 0){
+	}else if(strcmp(received.name,"off") == 0){
 		if(received.ID == 6) BSP_LED_Off(LED6);
 		if(received.ID == 5) BSP_LED_On(LED5);
 		if(received.ID == 4) BSP_LED_On(LED4);
@@ -117,8 +113,6 @@ void execComand(Comand received){
 	}else if(strcmp(received.name,"read") == 0) {
 		//Qua ci mettiamo la lettura da sensore
 	}
-
-	//Qua va interpretato il comando
 }
 
 uint8_t isLoop(){

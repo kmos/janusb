@@ -19,7 +19,7 @@ How To Use
 To Install
 ----------
 
-Once you have installed all the dependencies and , get the code:
+Once you have installed all the dependencies and janus-gateway (https://github.com/meetecho/janus-gateway/), get the code:
 
         git clone https://github.com/kmos/janusb
         cd janusb

@@ -28,8 +28,7 @@ Then just use:
 
         sh autogen.sh
 
-to generate the configure file. After that, configure and compile as
-usual to start the whole compilation process:
+After that, configure&compile adding the path of janus installation:
 
         ./configure --prefix=/opt/janus
         make
@@ -40,9 +39,11 @@ also do a:
 
         make config
 
-after the installation of the plugin, you need to put the sources in html directory in your webserver dir.
-
 To Use
 ------
+
+After the installation of the plugin, you need to put the sources in html directory in your webserver dir.
+
+
 
 

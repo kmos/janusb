@@ -2,7 +2,7 @@
 
 *****
 
-Janusb provides a very simple interface to the low level serial port code necessary to program Arduino chipsets, St MicroControllers and all the IoT.
+Janusb provides a very simple interface to the low level serial port code necessary communicate with Arduino, St MicroControllers and all the IoT.
 
 *****
 
@@ -15,6 +15,7 @@ Why not!
 How To Use
 ==========
 
+Using janusb is pretty easy because it is pretty basic. The main goal of janusb is to send/recive JSON messages from web application  to microcontroller (and vice-versa) without the knowledge of hardware.
 
 To Install
 ----------
@@ -42,8 +43,17 @@ also do a:
 To Use
 ------
 
-After the installation of the plugin, you need to put the sources in html directory in your webserver dir.
+#### Html:
+
+After the installation, you need to put the html example in your webserver dir.
+
+#### Stm32f4Discovery:
+
+You can use the example in Microcontroller dir to flash the Stm32f4 Microcontroller to test the plugin.
+
+#### Arduino:
 
 
-
+To Configure
+------------
 

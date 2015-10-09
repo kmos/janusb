@@ -15,6 +15,7 @@
 #include <USBD_CDC.h>
 #include "diag/Trace.h"
 #include "stm32f4_discovery.h"
+#include "stm32f4_discovery_accelerometer.h"
 #include "usbd_core.h"
 #include "usbd_cdc_if_template.h"
 #include "usbd_desc.h"
@@ -40,6 +41,7 @@ uint8_t isLoop();
 void finalize();
 int  parsing (Comand * received);
 void execComand(Comand received);
+void buildAcceleroResponse(int16_t * value);
 
 //comand ReceiveComand;
 //Logical Variable ------------------------*/

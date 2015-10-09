@@ -24,6 +24,8 @@ void setup(){
 	BSP_LED_Init(1);
 	BSP_LED_Init(2);
 	BSP_LED_Init(3);
+	//Initializze board's accelerometer
+    BSP_ACCELERO_Init();
 	//Initializze USB device
 	BSP_LED_On(LED3);
 	USBD_Init(&USBD_Device, &VCP_Desc, 0);
@@ -33,7 +35,7 @@ void setup(){
 	HAL_Delay(4000);
 	BSP_LED_Off(LED3);
 	//Initializze logical variable and memory areas
-	memset(response, '\0', sizeof response);
+	memset(response, '\0',strlen(response));
 }
 /* Loop function ------------------------------*/
 void loop(){
@@ -52,6 +54,7 @@ void loop(){
 	  sprintf(&response[spot], "%c", buf );
 	  spot += 1;
 	}
+	memset(response, '\0', strlen(response));
 	//Qua ci va il codice per le letture periodiche se ci riesco a implementarle.
 }
 //Parsing the message and execute commands
@@ -93,6 +96,9 @@ int  parsing (Comand *received)
 				free(store);
 				i++;
 				break;
+			case JSMN_PRIMITIVE: break;
+			case JSMN_ARRAY: break;
+
 		}
 	}
 	//Devo liberare le risorse so sicuro
@@ -107,12 +113,42 @@ void execComand(Comand received){
 		if(received.ID == 6) BSP_LED_On(LED6);
 	}else if(strcmp(received.name,"off") == 0){
 		if(received.ID == 6) BSP_LED_Off(LED6);
-		if(received.ID == 5) BSP_LED_On(LED5);
-		if(received.ID == 4) BSP_LED_On(LED4);
-		if(received.ID == 3) BSP_LED_On(LED3);
+		if(received.ID == 5) BSP_LED_Off(LED5);
+		if(received.ID == 4) BSP_LED_Off(LED4);
+		if(received.ID == 3) BSP_LED_Off(LED3);
 	}else if(strcmp(received.name,"read") == 0) {
-		//Qua ci mettiamo la lettura da sensore
+		if(received.ID == 1){
+			/*Initializzae local variable*/
+			int16_t pos[3];
+			int i = 0;
+			/*Reading the board accelerometer */
+			BSP_ACCELERO_GetXYZ(pos);
+			/*Build JSON response */
+			memset(response,'\0',256);
+			//buildAcceleroResponse(pos);
+			/*Send the json on usb*/
+			for (i=0;i<256;i++) VCP_write(&response[i],1);
+		}else if (received.ID == 2){
+			//Lettura da sensore di temperatura
+
+		}else{
+			//Nel caso arrivi un ID da cui non si può leggere
+		}
+	}else{
+		//Nel caso arrivi un comando non conosciuto
 	}
+}
+
+void buildAcceleroResponse(int16_t * pos)
+{
+	char *buf;
+	strcat (response,"{ \"opstatus\" : \"ok\", \"measure\" : [");
+	strcat (response,itoa(pos[0],buf,10));
+	strcat (response,",");
+	strcat (response,itoa(pos[1],buf,10));
+	strcat (response,",");
+	strcat (response,itoa(pos[2],buf,10));
+	strcat (response,"], \"type\" : \"accelerometer\" }");
 }
 
 uint8_t isLoop(){

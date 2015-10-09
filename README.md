@@ -49,7 +49,7 @@ After the installation, you need to put the html example in your webserver dir.
 
 #### Stm32f4Discovery:
 
-You can use the example in Microcontroller dir to flash the Stm32f4 Microcontroller to test the plugin.
+You can use the example in Microcontroller dir to flash the Stm32f4 Microcontroller and test the plugin.
 
 #### Arduino:
 

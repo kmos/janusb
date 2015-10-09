@@ -6,17 +6,17 @@
  *
  */
 
-#include "plugin.h"
+#include "../janus-gateway/plugin.h"
 
 #include <jansson.h>
 
-#include "../debug.h"
-#include "../apierror.h"
-#include "../config.h"
-#include "../mutex.h"
-#include "../record.h"
-#include "../rtcp.h"
-#include "../utils.h"
+#include "../janus-gateway/debug.h"
+#include "../janus-gateway/apierror.h"
+#include "../janus-gateway/config.h"
+#include "../janus-gateway/mutex.h"
+#include "../janus-gateway/record.h"
+#include "../janus-gateway/rtcp.h"
+#include "../janus-gateway/utils.h"
 
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -24,10 +24,10 @@
 
 
 /* Plugin information */
-#define JANUS_SERIAL_VERSION			6
-#define JANUS_SERIAL_VERSION_STRING	"0.0.6"
+#define JANUS_SERIAL_VERSION			1
+#define JANUS_SERIAL_VERSION_STRING		"0.0.1"
 #define JANUS_SERIAL_DESCRIPTION		"This is a Serial plugin for Janus"
-#define JANUS_SERIAL_NAME				"JANUS EchoTest plugin"
+#define JANUS_SERIAL_NAME			"JANUS Serial plugin"
 #define JANUS_SERIAL_AUTHOR			"Mosfet & Friends"
 #define JANUS_SERIAL_PACKAGE			"janus.plugin.serial"
 
@@ -240,7 +240,7 @@ int janus_serial_init(janus_callbacks *callback, const char *config_path) {
 	/* Open the file descriptor in non-blocking mode */
 	if(fd = open(portname,O_RDWR | O_NOCTTY | O_NONBLOCK)){
     		//printf("stream aperto\n");
-		JANUS_LOG(LOG_INFO, "stream aperto\n");
+		JANUS_LOG(LOG_INFO, "stream aperto - Janus Serial\n");
 	}else{
 		//printf("errora nell'apertura dello stream\n");
 		JANUS_LOG(LOG_INFO, "errore nell'apertura dello stream\n");
@@ -347,7 +347,7 @@ const char *janus_serial_get_author(void) {
 	return JANUS_SERIAL_AUTHOR;
 }
 
-const char *janu_serial_get_package(void) {
+const char *janus_serial_get_package(void) {
 	return JANUS_SERIAL_PACKAGE;
 }
 

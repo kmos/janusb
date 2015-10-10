@@ -89,8 +89,8 @@ int main (int argc, char* argv[]){
 //	while(n=read(fd,&buf,sizeof(char)) == -1){
 //		printf("code : %d",n);
 //	}
-	if (read(fd,&buf,sizeof(char)) == 0) printf("risposta : %s",response);
-	else printf("Error");
+	if (read(fd,&buf,sizeof(char)) == 0) printf("risposta : %s",buf);
+	else printf("Error %s",buf);
 	return 0;
 
 }

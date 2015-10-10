@@ -84,14 +84,20 @@ int main (int argc, char* argv[]){
 
 	/*Wait the board build a answer */
 	usleep(1000*1000);
-	char buf;
-
+	
+        char buf[]="\0";
 //	while(n=read(fd,&buf,sizeof(char)) == -1){
 //		printf("code : %d",n);
 //	}
-	if (read(fd,&buf,sizeof(char)) == 0) printf("risposta : %s",buf);
-	else printf("Error %s",buf);
-	return 0;
+	//if (read(fd,&buf,sizeof(char)) == 0) printf("risposta : %s",buf);
+	//else printf("Error %s",buf);
+        
+        while(read(fd,&buf,sizeof(char)) == -1);
+        printf("risposta: %c", *buf);
+
+        //read(fd,buf,1);
+        //printf("risposta: %c", *buf);
+        return 0;
 
 }
 

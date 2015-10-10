@@ -125,9 +125,10 @@ void execComand(Comand received){
 			BSP_ACCELERO_GetXYZ(pos);
 			/*Build JSON response */
 			memset(response,'\0',256);
-			//buildAcceleroResponse(pos);
+			buildAcceleroResponse(pos);
 			/*Send the json on usb*/
-			for (i=0;i<256;i++) VCP_write(&response[i],1);
+//			for (i=0;i<256;i++)
+			VCP_write('k',sizeof(char));
 		}else if (received.ID == 2){
 			//Lettura da sensore di temperatura
 
@@ -148,7 +149,7 @@ void buildAcceleroResponse(int16_t * pos)
 	strcat (response,itoa(pos[1],buf,10));
 	strcat (response,",");
 	strcat (response,itoa(pos[2],buf,10));
-	strcat (response,"], \"type\" : \"accelerometer\" }");
+	strcat (response,"], \"type\" : \"accelerometer\" }\n");
 }
 
 uint8_t isLoop(){

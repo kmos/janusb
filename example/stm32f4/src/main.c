@@ -34,8 +34,12 @@ void setup(){
 	USBD_Start(&USBD_Device);
 	HAL_Delay(4000);
 	BSP_LED_Off(LED3);
+	//Initializze ADC conv
+	MX_ADC1_Init();
+
 	//Initializze logical variable and memory areas
-	memset(response, '\0',strlen(response));
+	memset(request, '\0',256);
+	memset(response,'\0',256);
 }
 /* Loop function ------------------------------*/
 void loop(){
@@ -51,10 +55,11 @@ void loop(){
 			if(p_code == 1){/*ERRORE NEL PARSING DA GESTIRE*/ }
 			break;
 		}
-	  sprintf(&response[spot], "%c", buf );
+	  sprintf(&request[spot], "%c", buf );
 	  spot += 1;
 	}
-	memset(response, '\0', strlen(response));
+	//Reset the request string
+	memset(request, '\0', strlen(request));
 	//Qua ci va il codice per le letture periodiche se ci riesco a implementarle.
 }
 //Parsing the message and execute commands
@@ -72,7 +77,7 @@ int  parsing (Comand *received)
 	/*Initializze parse */
 	jsmn_init(&parser);
 	//Parse the string
-	int r = jsmn_parse(&parser, response, strlen(response), tokens, 256);
+	int r = jsmn_parse(&parser, request, strlen(request), tokens, 256);
 	// Error control
 	if (r < 0) 	return 1;
 	/* Assume the top-level element is an object */
@@ -83,12 +88,12 @@ int  parsing (Comand *received)
 			case JSMN_STRING:
 				t_length = tokens[i].end-tokens[i].start;
 				store = malloc(sizeof(char)*t_length);
-				strncpy(store,&response[tokens[i].start],t_length);
+				strncpy(store,&request[tokens[i].start],t_length);
 				if(strncmp(store,"command",t_length) == 0){
-					strncpy(received->name,&response[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
+					strncpy(received->name,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
 				}else if(strncmp(store,"ID",t_length) == 0){
 					memset(store,'\0',tokens[i+1].end-tokens[i+1].start);
-					strncpy(store,&response[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
+					strncpy(store,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
 					received->ID = atoi(store);
 				}else{
 					//Quando mi arriva qualcosa di inateso
@@ -98,14 +103,13 @@ int  parsing (Comand *received)
 				break;
 			case JSMN_PRIMITIVE: break;
 			case JSMN_ARRAY: break;
-
 		}
 	}
 	//Devo liberare le risorse so sicuro
 	return 0;
 }
 
-void execComand(Comand received){
+int execComand(Comand received){
 	if(strcmp(received.name,"on") == 0){
 		if(received.ID == 3) BSP_LED_On(LED3);
 		if(received.ID == 4) BSP_LED_On(LED4);
@@ -120,42 +124,89 @@ void execComand(Comand received){
 		if(received.ID == 1){
 			/*Initializzae local variable*/
 			int16_t pos[3];
-			int i = 0;
 			/*Reading the board accelerometer */
 			BSP_ACCELERO_GetXYZ(pos);
 			/*Build JSON response */
-			memset(response,'\0',256);
-			buildAcceleroResponse(pos);
+			sprintf(response,"{ \"opstatus\" : \"ok\", \"measure\" : [ %d,%d,%d],\"type\" : \"accelerometer\" }\n ",pos[0],pos[1],pos[2]);
 			/*Send the json on usb*/
-//			for (i=0;i<256;i++)
-			VCP_write('k',sizeof(char));
+			VCP_write(&response,256);
 		}else if (received.ID == 2){
 			//Lettura da sensore di temperatura
+			float temperature;
+			//Start the conversion
+			if(HAL_ADC_Start (&hadc1) != HAL_OK){
+				//Gestire errore
+			}
+			while (HAL_ADC_GetState(&hadc1) == HAL_ADC_STATE_BUSY ){}
+			//Processing the conversion
+			temperature = HAL_ADC_GetValue(&hadc1); //Return the converted data
+			temperature *= 3300;
+			temperature /= 0xfff; //Reading in mV
+			temperature /= 1000.0; //Reading in Volts
+			temperature -= 0.760; // Subtract the reference voltage at 25°C
+			temperature /= .0025; // Divide by slope 2.5mV
 
+			temperature += 25.0; // Add the 25°C
+
+			int d1 = temperature;            // Get the integer part (678).
+			float f2 = temperature - d1;     // Get fractional part (678.0123 - 678 = 0.0123).
+			int d2 = trunc(f2 * 10000);   // Turn into integer (123).
+			// Print as parts, note that you need 0-padding for fractional bit.
+			// Since d1 is 678 and d2 is 123, you get "678.0123".
+			sprintf(response,"{ \"opstatus\" : \"ok\", \"measure\" : %d.%d4,\"type\" : \"temperature\" }\n ",d1,d2);
+			VCP_write(&response,256);
 		}else{
 			//Nel caso arrivi un ID da cui non si può leggere
+			return 1;
 		}
 	}else{
 		//Nel caso arrivi un comando non conosciuto
+		return 1;
 	}
-}
-
-void buildAcceleroResponse(int16_t * pos)
-{
-	char *buf;
-	strcat (response,"{ \"opstatus\" : \"ok\", \"measure\" : [");
-	strcat (response,itoa(pos[0],buf,10));
-	strcat (response,",");
-	strcat (response,itoa(pos[1],buf,10));
-	strcat (response,",");
-	strcat (response,itoa(pos[2],buf,10));
-	strcat (response,"], \"type\" : \"accelerometer\" }\n");
+    memset(response,'\0',256);
+    return 0;
 }
 
 uint8_t isLoop(){
 	return 1;
 }
 
+/* GPIO initialization function */
+void MX_GPIO_Init()
+{
+  /* GPIO Ports Clock Enable */
+  __GPIOA_CLK_ENABLE();
+  __GPIOB_CLK_ENABLE();
+  __GPIOC_CLK_ENABLE();
+}
+/* ADC1 Initializzation function */
+void MX_ADC1_Init(void)
+{
+	ADC_ChannelConfTypeDef sConfig;
+
+	/**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
+	*/
+	hadc1.Instance 						= ADC1;
+	hadc1.Init.ClockPrescaler 			= ADC_CLOCKPRESCALER_PCLK_DIV8;
+	hadc1.Init.Resolution 				= ADC_RESOLUTION12b;
+	hadc1.Init.ScanConvMode 			= DISABLE;
+	hadc1.Init.ContinuousConvMode 		= DISABLE;
+	hadc1.Init.DiscontinuousConvMode 	= DISABLE;
+	hadc1.Init.ExternalTrigConvEdge 	= ADC_EXTERNALTRIGCONVEDGE_NONE;
+	hadc1.Init.DataAlign 				= ADC_DATAALIGN_RIGHT;
+	hadc1.Init.NbrOfConversion 			= 1;
+	hadc1.Init.DMAContinuousRequests 	= DISABLE;
+	hadc1.Init.EOCSelection 			= EOC_SINGLE_CONV;
+	HAL_ADC_Init(&hadc1);
+
+	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	*/
+	sConfig.Channel = ADC_CHANNEL_TEMPSENSOR;
+	sConfig.Rank = 1;
+	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
+
+}
 
 void finalize(){
 }

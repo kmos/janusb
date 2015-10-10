@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "stm32f407xx.h"
+#include "stm32f4xx_hal.h"
 #include <USBD_CDC.h>
 #include "diag/Trace.h"
 #include "stm32f4_discovery.h"
@@ -40,17 +42,20 @@ void loop();
 uint8_t isLoop();
 void finalize();
 int  parsing (Comand * received);
-void execComand(Comand received);
-void buildAcceleroResponse(int16_t * value);
+int execComand(Comand received);
+static void MX_ADC1_Init(void);
 
-//comand ReceiveComand;
+
 //Logical Variable ------------------------*/
 uint8_t receiving_buffer;
 uint8_t jstring[256];
 char response[256];
+char request [256];
 
 /* USB Handler ----------------------------*/
 USBD_HandleTypeDef USBD_Device;
+/*ADC handler -----------------------------*/
+ADC_HandleTypeDef hadc1;
 
 
 

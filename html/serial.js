@@ -52,18 +52,23 @@ var janus = null;
 var serial = null;
 var started = false;
 var startled = false;
+var bitrateTimer = null;
+var spinner = null;
+
+var audioenabled = false;
+var videoenabled = false;
 
 /***MESSAGGI JSON***/
-var sens_a = '{ "command": "read", "id": 1 }';
-var sens_t = '{ "command": "read", "id": 2 }';
-var led3_on = '{ "command": "on", "id": 3 }';
-var led3_off = '{ "command": "off", "id": 3 }';
-var led4_on = '{ "command": "on", "id": 4 }';
-var led4_off = '{ "command": "off", "id": 4 }';
-var led5_on = '{ "command": "on", "id": 5 }';
-var led5_off = '{ "command": "off", "id": 5 }';
-var led6_on = '{ "command": "on", "id": 6 }';
-var led6_off = '{ "command": "off", "id": 6 }';
+var sens_a = { "command": "read", "id": 1 };
+var sens_t = { "command": "read", "id": 2 };
+var led3_on = { "command": "on", "id": 3 };
+var led3_off = { "command": "off", "id": 3 };
+var led4_on = { "command": "on", "id": 4 };
+var led4_off = { "command": "off", "id": 4 };
+var led5_on = { "command": "on", "id": 5 };
+var led5_off = { "command": "off", "id": 5 };
+var led6_on = { "command": "on", "id": 6 };
+var led6_off = { "command": "off", "id": 6 };
 
 
 $(document).ready(function() {

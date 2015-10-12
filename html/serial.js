@@ -52,6 +52,11 @@ var janus = null;
 var serial = null;
 var started = false;
 var startled = false;
+var bitrateTimer = null;
+var spinner = null;
+
+var audioenabled = false;
+var videoenabled = false;
 
 /***MESSAGGI JSON***/
 var sens_a = { "command": "read", "id": 1 };
@@ -135,48 +140,48 @@ $(document).ready(function() {
 		$('#l3').click(function(){
 			if($('#l3').is(':checked')){
 		
-				window.alert("Led 3 ON");
+				//window.alert("Led 3 ON");
 				serial.send({"message": led3_on});
 			}
 			else {
-				window.alert("Led 3 OFF");
-				serial.send({"message": led3_on});
+				//window.alert("Led 3 OFF");
+				serial.send({"message": led3_off});
 			}
 		});			
 		
 		$('#l4').click(function(){
 			if($('#l4').is(':checked')){
 		
-				window.alert("Led 4 ON");
+				//window.alert("Led 4 ON");
 				serial.send({"message": led4_on});
 			}
 			else {
-				window.alert("Led 4 OFF");
-				serial.send({"message": led4_on});
+				//window.alert("Led 4 OFF");
+				serial.send({"message": led4_off});
 			}
 		});	
 		
 		$('#l5').click(function(){
 			if($('#l5').is(':checked')){
 		
-				window.alert("Led 5 ON");
+				//window.alert("Led 5 ON");
 				serial.send({"message": led5_on});
 			}
 			else {
-				window.alert("Led 5 OFF");
-				serial.send({"message": led5_on});
+				//window.alert("Led 5 OFF");
+				serial.send({"message": led5_off});
 			}
 		});	
 
 		$('#l6').click(function(){
 			if($('#l6').is(':checked')){
 		
-				window.alert("Led 6 ON");
+				//window.alert("Led 6 ON");
 				serial.send({"message": led6_on});
 			}
 			else {
-				window.alert("Led 6 OFF");
-				serial.send({"message": led6_on});
+				//window.alert("Led 6 OFF");
+				serial.send({"message": led6_off});
 			}
 		});	
       

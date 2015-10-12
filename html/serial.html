@@ -94,7 +94,7 @@
                 <div class="thumbnail">
                     <!--<img src="http://placehold.it/800x500" alt="">-->
                     <div class="caption">
-                        <h3>Turn on/off Led</h3>
+                        <legend>Turn on/off Led</legend>
                         <p>This feature allow to turn on/off a Led</p>
                         <p>
                             <button class="btn btn-danger" autocomplete="off" id="led">Led On</button> 
@@ -110,27 +110,44 @@
                         <p>This feature allow to send the json</p>
                         <p>
                             <!--<a href="#" class="btn btn-primary">Send</a>-->
-                            <form action="">
+                            
                             <fieldset>
         					<legend>Sensors</legend>
+        					<p>
         					Accelerometer <button class="btn btn-default" type=”submit” id="accel">Read</button>
+        					</p>
+        					<p>
         					Temperature   <button class="btn btn-default" type=”submit” id="temp">Read</button>
+    						</p>
     						</fieldset>
-    						<fieldset>
-        					<legend>LED</legend>
-        					Led_3 <input type="checkbox" name="led3" value="3" id="l3"/>
-        					Led_4 <input type="checkbox" name="led4" value="4" id="l4"/>
-    						</fieldset>
-    						<fieldset>
-        					Led_5 <input type="checkbox" name="led5" id="l5"/>
-        					Led_6 <input type="checkbox" name="led6" id="l6"/>
-    						</fieldset>
-							</form>
-                        </p>
                     </div>
                 </div>
             </div>
 
+            <div class="col-md-3 col-sm-6 hero-feature">
+                <div class="thumbnail">
+                    <div class="caption">
+                        
+    						
+    						<fieldset>
+        					<legend>LED</legend>
+        					<p>
+        					Led_3 <input type="checkbox" name="led3"  id="l3"/>
+        					Led_4 <input type="checkbox" name="led4"  id="l4"/>
+    						</p>
+    						</fieldset>
+    						<fieldset>
+        					<p>
+        					Led_5 <input type="checkbox" name="led5" id="l5"/>
+        					Led_6 <input type="checkbox" name="led6" id="l6"/>
+    						</p>
+    						</fieldset>
+							
+                    </div>
+                </div>
+            </div>
+
+<!--
             <div class="col-md-3 col-sm-6 hero-feature">
                 <div class="thumbnail">
        <textarea name="Receive TextBox" cols="27" rows="5"> </textarea>
@@ -143,7 +160,7 @@
                     </div>
                 </div>
             </div>
-
+-->
         </div>
         <!-- /.row -->
 

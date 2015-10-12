@@ -58,6 +58,19 @@ var spinner = null;
 var audioenabled = false;
 var videoenabled = false;
 
+/***MESSAGGI JSON***/
+var sens_a = '{ "command": "read", "id": 1 }';
+var sens_t = '{ "command": "read", "id": 2 }';
+var led3_on = '{ "command": "on", "id": 3 }';
+var led3_off = '{ "command": "off", "id": 3 }';
+var led4_on = '{ "command": "on", "id": 4 }';
+var led4_off = '{ "command": "off", "id": 4 }';
+var led5_on = '{ "command": "on", "id": 5 }';
+var led5_off = '{ "command": "off", "id": 5 }';
+var led6_on = '{ "command": "on", "id": 6 }';
+var led6_off = '{ "command": "off", "id": 6 }';
+
+
 $(document).ready(function() {
 	// Initialize the library (console debug enabled)
 	Janus.init({debug: true, callback: function() {
@@ -108,6 +121,70 @@ $(document).ready(function() {
 		console.log("Sending message (" + JSON.stringify(body) + ")");
 		serial.send({"message": body});
 		   });	
+
+/*************CODICE INVIO JSON**************/
+
+		$('#accel').click(function() {
+			
+			$('#accel').html("Reading...").removeClass("btn-default").addClass("btn-primary");
+			serial.send({"message": sens_a});
+		   });	
+
+		$('#temp').click(function() {
+
+			$('#temp').html("Reading...").removeClass("btn-default").addClass("btn-primary");
+			serial.send({"message": sens_t});
+		   });	
+
+
+		$('#l3').click(function(){
+			if($('#l3').is(':checked')){
+		
+				window.alert("Led 3 ON");
+				serial.send({"message": led3_on});
+			}
+			else {
+				window.alert("Led 3 OFF");
+				serial.send({"message": led3_on});
+			}
+		});			
+		
+		$('#l4').click(function(){
+			if($('#l4').is(':checked')){
+		
+				window.alert("Led 4 ON");
+				serial.send({"message": led4_on});
+			}
+			else {
+				window.alert("Led 4 OFF");
+				serial.send({"message": led4_on});
+			}
+		});	
+		
+		$('#l5').click(function(){
+			if($('#l5').is(':checked')){
+		
+				window.alert("Led 5 ON");
+				serial.send({"message": led5_on});
+			}
+			else {
+				window.alert("Led 5 OFF");
+				serial.send({"message": led5_on});
+			}
+		});	
+
+		$('#l6').click(function(){
+			if($('#l6').is(':checked')){
+		
+				window.alert("Led 6 ON");
+				serial.send({"message": led6_on});
+			}
+			else {
+				window.alert("Led 6 OFF");
+				serial.send({"message": led6_on});
+			}
+		});	
+      
 							
 									
 									
@@ -140,27 +217,4 @@ $(document).ready(function() {
 		});
 	}});
 });
-
-function checkEnter(event) {
-	var theCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
-	if(theCode == 13) {
-		sendData();
-		return false;
-	} else {
-		return true;
-	}
-}
-
-function sendData() {
-	var data = $('#datasend').val();
-	if(data === "") {
-		bootbox.alert('Insert a message to send on the DataChannel');
-		return;
-	}
-	serial.data({
-		text: data,
-		error: function(reason) { bootbox.alert(reason); },
-		success: function() { $('#datasend').val(''); },
-	});
-}
 

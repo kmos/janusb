@@ -52,11 +52,6 @@ var janus = null;
 var serial = null;
 var started = false;
 var startled = false;
-var bitrateTimer = null;
-var spinner = null;
-
-var audioenabled = false;
-var videoenabled = false;
 
 /***MESSAGGI JSON***/
 var sens_a = '{ "command": "read", "id": 1 }';

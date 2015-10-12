@@ -49,15 +49,23 @@ void loop(){
 	Comand receivedcomand;
 	//Reading cycle
 	while(VCP_read(&buf,1) != 0){
-		if(buf == '\n'){
-			p_code = parsing(&receivedcomand);
-			execComand(receivedcomand);
-			if(p_code == 1){/*ERRORE NEL PARSING DA GESTIRE*/ }
-			break;
+//		if(buf == '\0'){
+//			p_code = parsing(&receivedcomand);
+//			execComand(receivedcomand);
+//			if(p_code == 1){/*ERRORE NEL PARSING DA GESTIRE*/ }
+//			break;
+//		}
+		if(buf!='\n'){
+			sprintf(&request[spot], "%c", buf );
+			spot += 1;
 		}
-	  sprintf(&request[spot], "%c", buf );
-	  spot += 1;
 	}
+	if(strlen(request) != 0){
+		if(parsing(&receivedcomand) == 1) {/*gestisci errore */}
+		execComand(receivedcomand);
+
+	}
+
 	//Reset the request string
 	memset(request, '\0', strlen(request));
 	//Qua ci va il codice per le letture periodiche se ci riesco a implementarle.
@@ -91,7 +99,7 @@ int  parsing (Comand *received)
 				strncpy(store,&request[tokens[i].start],t_length);
 				if(strncmp(store,"command",t_length) == 0){
 					strncpy(received->name,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
-				}else if(strncmp(store,"ID",t_length) == 0){
+				}else if(strncmp(store,"id",t_length) == 0){
 					memset(store,'\0',tokens[i+1].end-tokens[i+1].start);
 					strncpy(store,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
 					received->ID = atoi(store);

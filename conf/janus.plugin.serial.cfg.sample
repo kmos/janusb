@@ -1,4 +1,4 @@
-; The Echo Test plugin doesn't need any configuration
+; Serial Plugin Configuration Example
 
 [general]
 ;baudrate options

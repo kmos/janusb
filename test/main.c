@@ -24,6 +24,7 @@ void rawMode 	(int fd,char * jstring);
 
 int main (int argc, char* argv[]){
 	int fd,n;
+	char response[256];
 
 	/* Open the file descriptor in non-blocking mode */
 	if(fd = open(portname,O_RDWR | O_NOCTTY | O_NONBLOCK)){
@@ -75,11 +76,28 @@ int main (int argc, char* argv[]){
 	/* Flush anything already in the serial buffer */
 	tcflush(fd, TCIFLUSH);
 
-	char *jstring = "{ server: \"example.com\", post: 80, message: \"hello world\"}\n";
-
+	char *jstring = "{ \"command\" : \"read\",\"ID\" : 1}\n";
+	//Write on COM port
 	rawMode(fd,jstring);
-	//singleMode(fd,jstring);
-	return 0;
+
+	tcflush(fd,TCIOFLUSH);
+
+	/*Wait the board build a answer */
+	usleep(1000*1000);
+	
+        char buf[]="\0";
+//	while(n=read(fd,&buf,sizeof(char)) == -1){
+//		printf("code : %d",n);
+//	}
+	//if (read(fd,&buf,sizeof(char)) == 0) printf("risposta : %s",buf);
+	//else printf("Error %s",buf);
+        
+        while(read(fd,&buf,sizeof(char)) == -1);
+        printf("risposta: %c", *buf);
+
+        //read(fd,buf,1);
+        //printf("risposta: %c", *buf);
+        return 0;
 
 }
 

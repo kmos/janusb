@@ -105,14 +105,27 @@
 
             <div class="col-md-3 col-sm-6 hero-feature">
                 <div class="thumbnail">
-                    <textarea name="Send TextBox" cols="27" rows="5">
-Enter Some text...
-</textarea>
                     <div class="caption">
-                        <h3>Send Json</h3>
+                       <!--<h3>Send Json</h3>
                         <p>This feature allow to send the json</p>
                         <p>
-                            <a href="#" class="btn btn-primary">Send</a> 
+                            <!--<a href="#" class="btn btn-primary">Send</a>-->
+                            <form action="">
+                            <fieldset>
+        					<legend>Sensors</legend>
+        					Accelerometer <button class="btn btn-default" type=”submit” id="accel">Read</button>
+        					Temperature   <button class="btn btn-default" type=”submit” id="temp">Read</button>
+    						</fieldset>
+    						<fieldset>
+        					<legend>LED</legend>
+        					Led_3 <input type="checkbox" name="led3" value="3" id="l3"/>
+        					Led_4 <input type="checkbox" name="led4" value="4" id="l4"/>
+    						</fieldset>
+    						<fieldset>
+        					Led_5 <input type="checkbox" name="led5" id="l5"/>
+        					Led_6 <input type="checkbox" name="led6" id="l6"/>
+    						</fieldset>
+							</form>
                         </p>
                     </div>
                 </div>
@@ -157,4 +170,3 @@ Enter Some text...
 </body>
 
 </html>
-

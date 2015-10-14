@@ -52,6 +52,9 @@ uint8_t jstring[256];
 char response[256];
 char request [256];
 
+/* Session ID -----------------------------*/
+guint64_t session;
+
 /* USB Handler ----------------------------*/
 USBD_HandleTypeDef USBD_Device;
 /*ADC handler -----------------------------*/

@@ -205,7 +205,12 @@ $(document).ready(function() {
 								onmessage: function(msg, jsep) {
 									console.log(" ::: Got a message :::");
 									console.log(JSON.stringify(msg));
+									//window.alert(JSON.stringify(msg));
+									var text = JSON.stringify(msg);
+									var obj = JSON.parse(text);
+									 $('#result').val(obj);
 									
+								
 								},
 								
 							}); // end janus attach

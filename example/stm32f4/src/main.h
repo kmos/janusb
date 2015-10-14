@@ -53,7 +53,7 @@ char response[256];
 char request [256];
 
 /* Session ID -----------------------------*/
-guint64_t session;
+uint64_t session;
 
 /* USB Handler ----------------------------*/
 USBD_HandleTypeDef USBD_Device;

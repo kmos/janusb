@@ -202,6 +202,12 @@ $(document).ready(function() {
 									bootbox.alert("Error attaching plugin... " + error);
 								},
 								
+								onmessage: function(msg, jsep) {
+									console.log(" ::: Got a message :::");
+									console.log(JSON.stringify(msg));
+									
+								},
+								
 							}); // end janus attach
 					},
 					error: function(error) {

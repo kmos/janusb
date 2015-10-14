@@ -49,18 +49,18 @@ void loop(){
 	Comand receivedcomand;
 	//Reading cycle
 	while(VCP_read(&buf,1) != 0){
-		if(buf == '\n'){
-			p_code = parsing(&receivedcomand);
-			execComand(receivedcomand);
-			if(p_code == 1){/*ERRORE NEL PARSING DA GESTIRE*/ }
-			break;
+		if(buf!='\n'){
+			sprintf(&request[spot], "%c", buf );
+			spot += 1;
 		}
-	  sprintf(&request[spot], "%c", buf );
-	  spot += 1;
+	}
+	if(strlen(request) != 0){
+		if(parsing(&receivedcomand) == 1) {/*TODO: gestione errori di ricezioni*/}
+		execComand(receivedcomand);
 	}
 	//Reset the request string
 	memset(request, '\0', strlen(request));
-	//Qua ci va il codice per le letture periodiche se ci riesco a implementarle.
+	//TODO: Letture periodiche
 }
 //Parsing the message and execute commands
 int  parsing (Comand *received)
@@ -89,9 +89,15 @@ int  parsing (Comand *received)
 				t_length = tokens[i].end-tokens[i].start;
 				store = malloc(sizeof(char)*t_length);
 				strncpy(store,&request[tokens[i].start],t_length);
+				/* Riconosce la sessione */
+				// if(strcmp(store,"session",t_length) == 0){
+				// 	memset(store,'\0',tokens[i+1].end-tokens[i+1].start);
+				// 	strncpy(store,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
+				// 	session = atoi(store);
+				// }
 				if(strncmp(store,"command",t_length) == 0){
 					strncpy(received->name,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
-				}else if(strncmp(store,"ID",t_length) == 0){
+				}else if(strncmp(store,"id",t_length) == 0){
 					memset(store,'\0',tokens[i+1].end-tokens[i+1].start);
 					strncpy(store,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
 					received->ID = atoi(store);
@@ -128,6 +134,7 @@ int execComand(Comand received){
 			BSP_ACCELERO_GetXYZ(pos);
 			/*Build JSON response */
 			sprintf(response,"{ \"opstatus\" : \"ok\", \"measure\" : [ %d,%d,%d],\"type\" : \"accelerometer\" }\n ",pos[0],pos[1],pos[2]);
+			//sprintf(response,"{ \"session\" : %d , \"opstatus\" : \"ok\", \"measure\" : [ %d,%d,%d],\"type\" : \"accelerometer\" }\n ",session,pos[0],pos[1],pos[2]);
 			/*Send the json on usb*/
 			VCP_write(&response,256);
 		}else if (received.ID == 2){
@@ -154,6 +161,7 @@ int execComand(Comand received){
 			// Print as parts, note that you need 0-padding for fractional bit.
 			// Since d1 is 678 and d2 is 123, you get "678.0123".
 			sprintf(response,"{ \"opstatus\" : \"ok\", \"measure\" : %d.%d4,\"type\" : \"temperature\" }\n ",d1,d2);
+			//sprintf(response,"{ \"session\" : %d , \"opstatus\" : \"ok\", \"measure\" : %d.%d4,\"type\" : \"temperature\" }\n ",session,d1,d2);
 			VCP_write(&response,256);
 		}else{
 			//Nel caso arrivi un ID da cui non si può leggere

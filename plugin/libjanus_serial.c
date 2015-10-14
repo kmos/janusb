@@ -524,14 +524,13 @@ struct janus_plugin_result *janus_serial_handle_message(janus_plugin_session *ha
   g_async_queue_push(messages, msg);
 	
   //inserito da giovanni
-  JANUS_LOG(LOG_INFO, "messaggio: %s \n", message);
+    JANUS_LOG(LOG_INFO, "messaggio: %s \n", message);
   char request[256];
   memset(request,'\0',256);
   strncpy(request,message,strlen(message)); 
         
   write(fd,request,strlen(request));
-  usleep((25+strlen(request))*100);
-
+	
   /* All the requests to this plugin are handled asynchronously */
   return janus_plugin_result_new(JANUS_PLUGIN_OK_WAIT, "I'm taking my time!");
 }
@@ -551,7 +550,7 @@ void janus_serial_setup_media(janus_plugin_session *handle) {
 	g_atomic_int_set(&session->hangingup, 0);
 	
 }
-
+/*
 void janus_serial_incoming_rtp(janus_plugin_session *handle, int video, char *buf, int len) {
 	if(handle == NULL || handle->stopped || g_atomic_int_get(&stopping) || !g_atomic_int_get(&initialized))
 		return;
@@ -593,9 +592,9 @@ void janus_serial_incoming_rtcp(janus_plugin_session *handle, int video, char *b
 		gateway->relay_rtcp(handle, video, buf, len);
 	}
 }
+*/
 
-
-
+/*
 void janus_serial_incoming_data(janus_plugin_session *handle, char *buf, int len) {
   if(handle == NULL || handle->stopped || g_atomic_int_get(&stopping) || !g_atomic_int_get(&initialized))
 		return
@@ -623,8 +622,8 @@ void janus_serial_incoming_data(janus_plugin_session *handle, char *buf, int len
 	  g_free(reply);
       }
 }
-
-
+*/
+/*
 void janus_serial_slow_link(janus_plugin_session *handle, int uplink, int video) {
 
 	if(handle == NULL || handle->stopped || g_atomic_int_get(&stopping) || !g_atomic_int_get(&initialized))
@@ -684,7 +683,7 @@ void janus_serial_slow_link(janus_plugin_session *handle, int uplink, int video)
 	}
 }
 
-
+*/
 
 void janus_serial_hangup_media(janus_plugin_session *handle) {
   JANUS_LOG(LOG_INFO, "No WebRTC media anymore\n");
@@ -846,10 +845,11 @@ static void *janus_serial_handler(void *data) {
 	  gateway->relay_rtcp(session->handle, 1, buf, 24);
 	  /* FIXME How should we handle a subsequent "no limit" bitrate? */
 	}
-  if(record) {
-  if(msg->sdp) {
-	 session->has_audio = (strstr(msg->sdp, "m=audio") != NULL);
-	 session->has_video = (strstr(msg->sdp, "m=video") != NULL);
+      }
+      if(record) {
+        if(msg->sdp) {
+	  session->has_audio = (strstr(msg->sdp, "m=audio") != NULL);
+	  session->has_video = (strstr(msg->sdp, "m=video") != NULL);
 	}
 	gboolean recording = json_is_true(record);
         const char *recording_base = json_string_value(recfile);

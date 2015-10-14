@@ -208,7 +208,9 @@ $(document).ready(function() {
 									//window.alert(JSON.stringify(msg));
 									var text = JSON.stringify(msg);
 									var obj = JSON.parse(text);
-									 $('#result').val(obj);
+									var now = new Date(Date.now());
+									var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+									 $('#result').append(formatted+" -> "+obj['result_serial']+"\n");
 									
 								
 								},

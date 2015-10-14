@@ -272,26 +272,25 @@ int janus_serial_init(janus_callbacks *callback, const char *config_path) {
     /* Get currently set options for the tty */
     tcgetattr(fd, &toptions);
 
-
     /* set custom options */
     janus_config_item *baudrate = janus_config_get_item_drilldown(config, "general","baudrate");  
     if(baudrate && baudrate->value){
       //set baudrate
-      cfsetispeed(&toptions, atol(baudrate->value));
-      cfsetospeed(&toptions, atol(baudrate->value));
+      cfsetispeed(&toptions, B9600);
+      cfsetospeed(&toptions, B9600);
     }
     janus_config_item *vmin = janus_config_get_item_drilldown(config, "general", "vmin");
     if(vmin && vmin->value){
       //set vmin
-      toptions.c_cc[VMIN] = atol(vmin->value);
+      toptions.c_cc[VMIN] = 12;
+      
     }
     janus_config_item *vtime = janus_config_get_item_drilldown(config, "general", "vtime");
     if(vtime && vtime->value){
       //set vtime
-      toptions.c_cc[VTIME] = atol(vtime->value);
+      toptions.c_cc[VTIME] = 0;
     }
     janus_config_item *portname = janus_config_get_item_drilldown(config, "general","portname");
-    
     
     /* 8 bits, no parity, no stop bits */
     toptions.c_cflag &= ~PARENB;
@@ -524,13 +523,13 @@ struct janus_plugin_result *janus_serial_handle_message(janus_plugin_session *ha
   g_async_queue_push(messages, msg);
 	
   //inserito da giovanni
-    JANUS_LOG(LOG_INFO, "messaggio: %s \n", message);
+  JANUS_LOG(LOG_INFO, "messaggio: %s \n", message);
   char request[256];
   memset(request,'\0',256);
   strncpy(request,message,strlen(message)); 
-        
+   
   write(fd,request,strlen(request));
-	
+ //  usleep((25+strlen(request))*100);	
   /* All the requests to this plugin are handled asynchronously */
   return janus_plugin_result_new(JANUS_PLUGIN_OK_WAIT, "I'm taking my time!");
 }

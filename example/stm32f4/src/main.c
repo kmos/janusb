@@ -117,15 +117,47 @@ int  parsing (Comand *received)
 
 int execComand(Comand received){
 	if(strcmp(received.name,"on") == 0){
-		if(received.ID == 3) BSP_LED_On(LED3);
-		if(received.ID == 4) BSP_LED_On(LED4);
-		if(received.ID == 5) BSP_LED_On(LED5);
-		if(received.ID == 6) BSP_LED_On(LED6);
+		if(received.ID == 3){
+			BSP_LED_On(LED3);
+			sprintf(response,"{ \"opstatus\" : \"ok\" }");
+			VCP_write(&response,256);	
+		} 
+		if(received.ID == 4){
+		  BSP_LED_On(LED4);
+		  sprintf(response,"{ \"opstatus\" : \"ok\" }");
+		  VCP_write(&response,256);	
+		}
+		if(received.ID == 5){
+		 	BSP_LED_On(LED5);
+		 	sprintf(response,"{ \"opstatus\" : \"ok\" }");
+			VCP_write(&response,256);	
+		}
+		if(received.ID == 6){
+			BSP_LED_On(LED6);
+			sprintf(response,"{ \"opstatus\" : \"ok\" }");
+		  VCP_write(&response,256);	
+		}
 	}else if(strcmp(received.name,"off") == 0){
-		if(received.ID == 6) BSP_LED_Off(LED6);
-		if(received.ID == 5) BSP_LED_Off(LED5);
-		if(received.ID == 4) BSP_LED_Off(LED4);
-		if(received.ID == 3) BSP_LED_Off(LED3);
+		if(received.ID == 6) {
+			BSP_LED_Off(LED6);
+			sprintf(response,"{ \"opstatus\" : \"ok\" }");
+			VCP_write(&response,256);	
+		} 
+		if(received.ID == 5){
+			BSP_LED_Off(LED5);
+			sprintf(response,"{ \"opstatus\" : \"ok\" }");
+			VCP_write(&response,256);	
+		} 
+		if(received.ID == 4){
+			BSP_LED_Off(LED4);
+			sprintf(response,"{ \"opstatus\" : \"ok\" }");
+			VCP_write(&response,256);	
+		} 
+		if(received.ID == 3) {
+			BSP_LED_Off(LED3);
+			sprintf(response,"{ \"opstatus\" : \"ok\" }");
+			VCP_write(&response,256);	
+		} 
 	}else if(strcmp(received.name,"read") == 0) {
 		if(received.ID == 1){
 			/*Initializzae local variable*/
@@ -169,10 +201,12 @@ int execComand(Comand received){
 		}
 	}else{
 		//Nel caso arrivi un comando non conosciuto
+		sprintf(response,"{ \"opstatus\" : \"err\" , \"code\" : 1 }");
+		VCP_write(&response,256);
 		return 1;
 	}
-    memset(response,'\0',256);
-    return 0;
+  memset(response,'\0',256);
+  return 0;
 }
 
 uint8_t isLoop(){

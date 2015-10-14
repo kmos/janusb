@@ -947,11 +947,16 @@ static void *janus_serial_handler(void *data) {
         char request[256];
         char response[256];
         memset(request, '\0',256);
+	memset(response,'\0',256);
         strncpy(request,msg->message,strlen(msg->message));
-        write(fd,request,strlen(request));
-        usleep(25+strlen(request)*100);
-        
-        //read(fd,&response,strlen(response));
+        tcflush(fd, TCIFLUSH);
+	write(fd,request,strlen(request));
+        //usleep(25+strlen(request)*100);
+       	
+	while(read(fd,&response,256) == -1) {}
+	JANUS_LOG(LOG_INFO,"risposta : %s",response);
+
+	tcflush(fd,TCIOFLUSH);
         char resp[] = "{ \"result_serial\" : \"ok\"}";
         int res = gateway->push_event(msg->handle, &janus_serial_plugin, NULL, resp, NULL, NULL);
 	//JANUS_LOG(LOG_VERB, "  >> %d (%s)\n", ret, janus_get_api_error(ret));

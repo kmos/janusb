@@ -82,10 +82,10 @@ static janus_plugin janus_serial_plugin =
     .create_session = janus_serial_create_session,
     .handle_message = janus_serial_handle_message,
     .setup_media = janus_serial_setup_media,
-    .incoming_rtp = janus_serial_incoming_rtp,
-    .incoming_rtcp = janus_serial_incoming_rtcp,
-    .incoming_data = janus_serial_incoming_data,
-    .slow_link = janus_serial_slow_link,
+    //.incoming_rtp = janus_serial_incoming_rtp,
+    //.incoming_rtcp = janus_serial_incoming_rtcp,
+    //.incoming_data = janus_serial_incoming_data,
+    //.slow_link = janus_serial_slow_link,
     .hangup_media = janus_serial_hangup_media,
     .destroy_session = janus_serial_destroy_session,
     .query_session = janus_serial_query_session,
@@ -215,12 +215,12 @@ void *janus_serial_listener(void *data){
     //  }else{
         
     //  }
-      usleep(1000*180);
+      usleep(1000*1800);
       //problema sessione...come manteniamo la sessione?
       //janus_serial_session *session = (janus_serial_session *)msg->handle->plugin_handle;
 	janus_serial_session *session;
                 if(!session) {
-			JANUS_LOG(LOG_ERR, "No session associated with this handle...\n");
+		//	JANUS_LOG(LOG_ERR, "No session associated with this handle...\n");
 //			janus_serial_message_free(msg);
 			continue;
 		}

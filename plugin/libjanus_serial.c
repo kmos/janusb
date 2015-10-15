@@ -276,19 +276,19 @@ int janus_serial_init(janus_callbacks *callback, const char *config_path) {
     janus_config_item *baudrate = janus_config_get_item_drilldown(config, "general","baudrate");  
     if(baudrate && baudrate->value){
       //set baudrate
-      cfsetispeed(&toptions,atoi(baudrate->value));
-      cfsetospeed(&toptions,atoi(baudrate->value));
+      cfsetispeed(&toptions,B9600);
+      cfsetospeed(&toptions,B9600);
     }
     janus_config_item *vmin = janus_config_get_item_drilldown(config, "general", "vmin");
     if(vmin && vmin->value){
       //set vmin
-      toptions.c_cc[VMIN] = atoi(vmin->value);
+      toptions.c_cc[VMIN] = 12;
       
     }
     janus_config_item *vtime = janus_config_get_item_drilldown(config, "general", "vtime");
     if(vtime && vtime->value){
       //set vtime
-      toptions.c_cc[VTIME] = atoi(vtime->value);
+      toptions.c_cc[VTIME] = 0;
     }
     janus_config_item *portname = janus_config_get_item_drilldown(config, "general","portname");
     

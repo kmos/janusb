@@ -223,12 +223,12 @@ $('#clear').click(function(){
 									var obj = JSON.parse(text);
 									var now = new Date(Date.now());
 									var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-									 var ok="ok";
-									 if(obj.result_serial==ok)
+									 //var ok="ok";
+									 //if(obj.result_serial==ok)
 									 //$('#result').append(formatted+" -> "+obj['result_serial']+"\n");
 									 $('#result').append(formatted+" -> "+obj.result_serial+"\n");
-									 else
-									 $('#result').append(formatted+" -> "+obj.result_serial+"\n");
+									 //else
+									 //$('#result').append(formatted+" -> "+obj.result_serial+"\n");
 									
 								
 								},

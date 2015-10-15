@@ -52,6 +52,10 @@ var janus = null;
 var serial = null;
 var started = false;
 var startled = false;
+var startled3 = false;
+var startled4 = false;
+var startled5 = false;
+var startled6 = false;
 var bitrateTimer = null;
 var spinner = null;
 
@@ -126,63 +130,67 @@ $(document).ready(function() {
 
 		$('#accel').click(function() {
 			
-			$('#accel').html("Reading...").removeClass("btn-default").addClass("btn-primary");
+			//$('#accel').html("Reading...").removeClass("btn-default").addClass("btn-primary");
 			serial.send({"message": sens_a});
 		   });	
 
 		$('#temp').click(function() {
 
-			$('#temp').html("Reading...").removeClass("btn-default").addClass("btn-primary");
+			//$('#temp').html("Reading...").removeClass("btn-default").addClass("btn-primary");
 			serial.send({"message": sens_t});
 		   });	
 
 
 		$('#l3').click(function(){
-			if($('#l3').is(':checked')){
-		
-				//window.alert("Led 3 ON");
-				serial.send({"message": led3_on});
-			}
-			else {
-				//window.alert("Led 3 OFF");
-				serial.send({"message": led3_off});
-			}
+			startled3 = !startled3;			
+			if(startled3){
+						$('#l3').html("ON").removeClass("btn-danger").addClass("btn-success");
+						serial.send({"message": led3_on});
+					}
+			else{
+				
+						$('#l3').html("OFF").removeClass("btn-success").addClass("btn-danger");
+						serial.send({"message": led3_off});
+				}
 		});			
 		
 		$('#l4').click(function(){
-			if($('#l4').is(':checked')){
-		
-				//window.alert("Led 4 ON");
-				serial.send({"message": led4_on});
-			}
-			else {
-				//window.alert("Led 4 OFF");
-				serial.send({"message": led4_off});
-			}
+			startled4 = !startled4;			
+			if(startled4){
+						$('#l4').html("ON").removeClass("btn-danger").addClass("btn-success");
+						serial.send({"message": led4_on});
+					}
+			else{
+				
+						$('#l4').html("OFF").removeClass("btn-success").addClass("btn-danger");
+						serial.send({"message": led4_off});
+				}
 		});	
 		
 		$('#l5').click(function(){
-			if($('#l5').is(':checked')){
-		
-				//window.alert("Led 5 ON");
-				serial.send({"message": led5_on});
-			}
-			else {
-				//window.alert("Led 5 OFF");
-				serial.send({"message": led5_off});
-			}
+			startled5 = !startled5;			
+			if(startled5){
+						$('#l5').html("ON").removeClass("btn-danger").addClass("btn-success");
+						serial.send({"message": led5_on});
+					}
+			else{
+				
+						$('#l5').html("OFF").removeClass("btn-success").addClass("btn-danger");
+						serial.send({"message": led5_off});
+				}
 		});	
 
 		$('#l6').click(function(){
-			if($('#l6').is(':checked')){
-		
-				//window.alert("Led 6 ON");
-				serial.send({"message": led6_on});
-			}
-			else {
-				//window.alert("Led 6 OFF");
-				serial.send({"message": led6_off});
-			}
+			startled6 = !startled6;			
+			if(startled6){
+						$('#l6').html("ON").removeClass("btn-danger").addClass("btn-success");
+						serial.send({"message": led6_on});
+					}
+			else{
+				
+						$('#l6').html("OFF").removeClass("btn-success").addClass("btn-danger");
+						serial.send({"message": led6_off});
+				}
 		});	
       
 							
@@ -194,6 +202,11 @@ $(document).ready(function() {
 											clearInterval(bitrateTimer);
 											janus.destroy();
 										});
+										
+$('#clear').click(function(){
+	
+	$('#result').text('');
+});
 								}, // end success pluginhandler
 								
 								
@@ -210,7 +223,12 @@ $(document).ready(function() {
 									var obj = JSON.parse(text);
 									var now = new Date(Date.now());
 									var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-									 $('#result').append(formatted+" -> "+obj['result_serial']+"\n");
+									 var ok="ok";
+									 if(obj.result_serial==ok)
+									 //$('#result').append(formatted+" -> "+obj['result_serial']+"\n");
+									 $('#result').append(formatted+" -> "+obj.result_serial+"\n");
+									 else
+									 $('#result').append(formatted+" -> "+obj.result_serial+"\n");
 									
 								
 								},

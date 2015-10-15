@@ -524,11 +524,11 @@ struct janus_plugin_result *janus_serial_handle_message(janus_plugin_session *ha
 	
   //inserito da giovanni
   JANUS_LOG(LOG_INFO, "messaggio: %s \n", message);
-  char request[256];
-  memset(request,'\0',256);
-  strncpy(request,message,strlen(message)); 
+  //char request[256];
+  //memset(request,'\0',256);
+  //strncpy(request,message,strlen(message)); 
    
-  write(fd,request,strlen(request));
+  //write(fd,request,strlen(request));
  //  usleep((25+strlen(request))*100);	
   /* All the requests to this plugin are handled asynchronously */
   return janus_plugin_result_new(JANUS_PLUGIN_OK_WAIT, "I'm taking my time!");
@@ -942,8 +942,24 @@ static void *janus_serial_handler(void *data) {
       json_decref(event);
       JANUS_LOG(LOG_VERB, "Pushing event: %s\n", event_text);
       if(!msg->sdp) {
-        int ret = gateway->push_event(msg->handle, &janus_serial_plugin, msg->transaction, event_text, NULL, NULL);
-	JANUS_LOG(LOG_VERB, "  >> %d (%s)\n", ret, janus_get_api_error(ret));
+        JANUS_LOG(LOG_INFO,"SONO QUI");
+	JANUS_LOG(LOG_INFO,"STO PER INVIARE");
+        char request[256];
+        char response[256];
+        memset(request, '\0',256);
+	memset(response,'\0',256);
+        strncpy(request,msg->message,strlen(msg->message));
+        tcflush(fd, TCIFLUSH);
+	write(fd,request,strlen(request));
+        //usleep(25+strlen(request)*100);
+       	
+	while(read(fd,&response,256) == -1) {}
+	JANUS_LOG(LOG_INFO,"risposta : %s",response);
+
+	tcflush(fd,TCIOFLUSH);
+        char resp[] = "{ \"result_serial\" : \"ok\"}";
+        int res = gateway->push_event(msg->handle, &janus_serial_plugin, NULL, resp, NULL, NULL);
+	//JANUS_LOG(LOG_VERB, "  >> %d (%s)\n", ret, janus_get_api_error(ret));
       } else {
         /* Forward the same offer to the gateway, to start the echo test */
 	const char *type = NULL;
@@ -969,7 +985,17 @@ static void *janus_serial_handler(void *data) {
 	}
         /* How long will the gateway take to push the event? */
         gint64 start = janus_get_monotonic_time();
-	int res = gateway->push_event(msg->handle, &janus_serial_plugin, msg->transaction, event_text, type, sdp);
+	JANUS_LOG(LOG_INFO,"STO PER INVIARE");
+        char request[256];
+        char response[256];
+        memset(request, '\0',256);
+        strncpy(request,msg->message,strlen(msg->message));
+        write(fd,request,strlen(request));
+        usleep(25+strlen(request)*100);
+        
+        //read(fd,&response,strlen(response));
+        char resp[] = "{ \"result_serial\" : \"ok\"}";
+        int res = gateway->push_event(msg->handle, &janus_serial_plugin, NULL, resp, NULL, NULL);
 	JANUS_LOG(LOG_VERB, "  >> Pushing event: %d (took %"SCNu64" us)\n",
 	res, janus_get_monotonic_time()-start);
         g_free(sdp);

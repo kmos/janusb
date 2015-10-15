@@ -943,56 +943,49 @@ static void *janus_serial_handler(void *data) {
       JANUS_LOG(LOG_VERB, "Pushing event: %s\n", event_text);
       if(!msg->sdp) {
         JANUS_LOG(LOG_INFO,"SONO QUI");
-	JANUS_LOG(LOG_INFO,"STO PER INVIARE");
+	      JANUS_LOG(LOG_INFO,"STO PER INVIARE");
         char request[256];
         char response[256];
         memset(request, '\0',256);
+	      memset(response,'\0',256);
         strncpy(request,msg->message,strlen(msg->message));
-        write(fd,request,strlen(request));
-        usleep(25+strlen(request)*100);
-        
-        //read(fd,&response,strlen(response));
-        char resp[] = "{ \"result_serial\" : \"ok\"}";
-        int res = gateway->push_event(msg->handle, &janus_serial_plugin, NULL, resp, NULL, NULL);
-	//JANUS_LOG(LOG_VERB, "  >> %d (%s)\n", ret, janus_get_api_error(ret));
+        tcflush(fd, TCIFLUSH);
+	      write(fd,request,strlen(request));
+        //usleep(25+strlen(request)*100);
+       	
+	     while(read(fd,&response,256) == -1) {}
+	     JANUS_LOG(LOG_INFO,"risposta : %s",response);
+
+	     tcflush(fd,TCIOFLUSH);
+       char resp[] = "{ \"result_serial\" : \"ok\"}";
+       int res = gateway->push_event(msg->handle, &janus_serial_plugin, NULL, resp, NULL, NULL);
+	     //JANUS_LOG(LOG_VERB, "  >> %d (%s)\n", ret, janus_get_api_error(ret));
       } else {
         /* Forward the same offer to the gateway, to start the echo test */
-	const char *type = NULL;
+	      const char *type = NULL;
         if(!strcasecmp(msg->sdp_type, "offer"))type = "answer";
-	if(!strcasecmp(msg->sdp_type, "answer"))type = "offer";
-	/* Any media direction that needs to be fixed? */
-	char *sdp = g_strdup(msg->sdp);
-	if(strstr(sdp, "a=recvonly")) {
+	      if(!strcasecmp(msg->sdp_type, "answer"))type = "offer";
+	      /* Any media direction that needs to be fixed? */
+	      char *sdp = g_strdup(msg->sdp);
+	      if(strstr(sdp, "a=recvonly")) {
           /* Turn recvonly to inactive, as we simply bounce media back */
-	  sdp = janus_string_replace(sdp, "a=recvonly", "a=inactive");
+	        sdp = janus_string_replace(sdp, "a=recvonly", "a=inactive");
         } else if(strstr(sdp, "a=sendonly")) {
-	  /* Turn sendonly to recvonly */
-	  sdp = janus_string_replace(sdp, "a=sendonly", "a=recvonly");
-	  /* FIXME We should also actually not echo this media back, though... */
+	      /* Turn sendonly to recvonly */
+	        sdp = janus_string_replace(sdp, "a=sendonly", "a=recvonly");
+	        /* FIXME We should also actually not echo this media back, though... */
         }
         /* Make also sure we get rid of ULPfec, red, etc. */
-	if(strstr(sdp, "ulpfec")) {
-	  sdp = janus_string_replace(sdp, "100 116 117 96", "100");
-	  sdp = janus_string_replace(sdp, "a=rtpmap:116 red/90000\r\n", "");
-	  sdp = janus_string_replace(sdp, "a=rtpmap:117 ulpfec/90000\r\n", "");
-	  sdp = janus_string_replace(sdp, "a=rtpmap:96 rtx/90000\r\n", "");
-	  sdp = janus_string_replace(sdp, "a=fmtp:96 apt=100\r\n", "");
-	}
+	      if(strstr(sdp, "ulpfec")) {
+	        sdp = janus_string_replace(sdp, "100 116 117 96", "100");
+	        sdp = janus_string_replace(sdp, "a=rtpmap:116 red/90000\r\n", "");
+	        sdp = janus_string_replace(sdp, "a=rtpmap:117 ulpfec/90000\r\n", "");
+	        sdp = janus_string_replace(sdp, "a=rtpmap:96 rtx/90000\r\n", "");
+	        sdp = janus_string_replace(sdp, "a=fmtp:96 apt=100\r\n", "");
+	      }
         /* How long will the gateway take to push the event? */
         gint64 start = janus_get_monotonic_time();
-	JANUS_LOG(LOG_INFO,"STO PER INVIARE");
-        char request[256];
-        char response[256];
-        memset(request, '\0',256);
-        strncpy(request,msg->message,strlen(msg->message));
-        write(fd,request,strlen(request));
-        usleep(25+strlen(request)*100);
-        
-        //read(fd,&response,strlen(response));
-        char resp[] = "{ \"result_serial\" : \"ok\"}";
-        int res = gateway->push_event(msg->handle, &janus_serial_plugin, NULL, resp, NULL, NULL);
-	JANUS_LOG(LOG_VERB, "  >> Pushing event: %d (took %"SCNu64" us)\n",
-	res, janus_get_monotonic_time()-start);
+      	res, janus_get_monotonic_time()-start);
         g_free(sdp);
       }
       g_free(event_text);

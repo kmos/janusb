@@ -112,8 +112,11 @@ $(document).ready(function() {
 									serial = pluginHandle;
 									console.log("Plugin attached! (" + serial.getPlugin() + ", id=" + serial.getId() + ")");
 									// Tasto led 
-									
-					startled=true;
+									$('#features').removeClass('hide').show();
+									$('#clear').removeClass('hide').show();
+									$('#sensordiv').removeClass('hide').show();
+									$('#lediv').removeClass('hide').show();
+									$('#texta').removeClass('hide').show();
 				$('#led').click(function() {
 			
 			startled = !startled;			
@@ -127,7 +130,7 @@ $(document).ready(function() {
 		   });	
 
 /*************CODICE INVIO JSON**************/
-
+		
 		$('#accel').click(function() {
 			
 			//$('#accel').html("Reading...").removeClass("btn-default").addClass("btn-primary");

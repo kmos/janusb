@@ -96,7 +96,9 @@ int  parsing (Comand *received)
 				// 	session = atoi(store);
 				// }
 				if(strncmp(store,"command",t_length) == 0){
-					strncpy(received->name,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
+					memset(store,'\0',tokens[i+1].end-tokens[i+1].start);
+					strncpy(store,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
+					received->name = atoi(store);
 				}else if(strncmp(store,"id",t_length) == 0){
 					memset(store,'\0',tokens[i+1].end-tokens[i+1].start);
 					strncpy(store,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
@@ -117,97 +119,98 @@ int  parsing (Comand *received)
 
 int execComand(Comand received){
 	memset(response,'\0',256);
-	if(strcmp(received.name,"on") == 0){
-		if(received.ID == 3){
-			BSP_LED_On(LED3);
-			sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
-			VCP_write(&response,256);	
-		} 
-		if(received.ID == 4){
-		  BSP_LED_On(LED4);
-		  sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
-		  VCP_write(&response,256);	
-		}
-		if(received.ID == 5){
-		 	BSP_LED_On(LED5);
-		 	sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
-			VCP_write(&response,256);	
-		}
-		if(received.ID == 6){
-			BSP_LED_On(LED6);
-			sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
-		  VCP_write(&response,256);	
-		}
-	}else if(strcmp(received.name,"off") == 0){
-		if(received.ID == 6) {
-			BSP_LED_Off(LED6);
-			sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
-			VCP_write(&response,256);	
-		} 
-		if(received.ID == 5){
-			BSP_LED_Off(LED5);
-			sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
-			VCP_write(&response,256);	
-		} 
-		if(received.ID == 4){
-			BSP_LED_Off(LED4);
-			sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
-			VCP_write(&response,256);	
-		} 
-		if(received.ID == 3) {
-			BSP_LED_Off(LED3);
-			sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
-			VCP_write(&response,256);	
-		} 
-	}else if(strcmp(received.name,"read") == 0) {
-		if(received.ID == 1){
-			/*Initializzae local variable*/
-			int16_t pos[3];
-			/*Reading the board accelerometer */
-			BSP_ACCELERO_GetXYZ(pos);
-			/*Build JSON response */
-			sprintf(response,"{ \"opstatus\" : \"ok\", \"measure\" : [ %d,%d,%d],\"type\" : \"accelerometer\" }\n ",pos[0],pos[1],pos[2]);
-			//sprintf(response,"{ \"session\" : %d , \"opstatus\" : \"ok\", \"measure\" : [ %d,%d,%d],\"type\" : \"accelerometer\" }\n ",session,pos[0],pos[1],pos[2]);
-			/*Send the json on usb*/
-			VCP_write(&response,256);
-		}else if (received.ID == 2){
-			//Lettura da sensore di temperatura
-			float temperature;
-			//Start the conversion
-			if(HAL_ADC_Start (&hadc1) != HAL_OK){
-				//Gestire errore
+	switch(received.name){
+		case ON :
+			if(received.ID == 3){
+				BSP_LED_On(LED3);
+				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				VCP_write(&response,256);
 			}
-			while (HAL_ADC_GetState(&hadc1) == HAL_ADC_STATE_BUSY ){}
-			//Processing the conversion
-			temperature = HAL_ADC_GetValue(&hadc1); //Return the converted data
-			temperature *= 3300;
-			temperature /= 0xfff; //Reading in mV
-			temperature /= 1000.0; //Reading in Volts
-			temperature -= 0.760; // Subtract the reference voltage at 25°C
-			temperature /= .0025; // Divide by slope 2.5mV
+			if(received.ID == 4){
+				BSP_LED_On(LED4);
+				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				VCP_write(&response,256);
+			}
+			if(received.ID == 5){
+				BSP_LED_On(LED5);
+				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				VCP_write(&response,256);
+			}
+			if(received.ID == 6){
+				BSP_LED_On(LED6);
+				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+			  VCP_write(&response,256);
+			}
+			break;
+		case OFF :
+			if(received.ID == 6) {
+				BSP_LED_Off(LED6);
+				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				VCP_write(&response,256);
+			}
+			if(received.ID == 5){
+				BSP_LED_Off(LED5);
+				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				VCP_write(&response,256);
+			}
+			if(received.ID == 4){
+				BSP_LED_Off(LED4);
+				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				VCP_write(&response,256);
+			}
+			if(received.ID == 3) {
+				BSP_LED_Off(LED3);
+				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				VCP_write(&response,256);
+			}
+			break;
+		case READ :
+			if(received.ID == 1){
+				/*Initializzae local variable*/
+				int16_t pos[3];
+				/*Reading the board accelerometer */
+				BSP_ACCELERO_GetXYZ(pos);
+				/*Build JSON response */
+				sprintf(response,"{ \"opstatus\" : \"ok\", \"measure\" : [ %d,%d,%d],\"type\" : \"accelerometer\" }\n ",pos[0],pos[1],pos[2]);
+				//sprintf(response,"{ \"session\" : %d , \"opstatus\" : \"ok\", \"measure\" : [ %d,%d,%d],\"type\" : \"accelerometer\" }\n ",session,pos[0],pos[1],pos[2]);
+				/*Send the json on usb*/
+				VCP_write(&response,256);
+			}else if (received.ID == 2){
+				//Lettura da sensore di temperatura
+				float temperature;
+				//Start the conversion
+				if(HAL_ADC_Start (&hadc1) != HAL_OK){
+					//Gestire errore
+				}
+				while (HAL_ADC_GetState(&hadc1) == HAL_ADC_STATE_BUSY ){}
+				//Processing the conversion
+				temperature = HAL_ADC_GetValue(&hadc1); //Return the converted data
+				temperature *= 3300;
+				temperature /= 0xfff; //Reading in mV
+				temperature /= 1000.0; //Reading in Volts
+				temperature -= 0.760; // Subtract the reference voltage at 25°C
+				temperature /= .0025; // Divide by slope 2.5mV
 
-			temperature += 25.0; // Add the 25°C
+				temperature += 25.0; // Add the 25°C
 
-			int d1 = temperature;            // Get the integer part (678).
-			float f2 = temperature - d1;     // Get fractional part (678.0123 - 678 = 0.0123).
-			int d2 = trunc(f2 * 10000);   // Turn into integer (123).
-			// Print as parts, note that you need 0-padding for fractional bit.
-			// Since d1 is 678 and d2 is 123, you get "678.0123".
-			sprintf(response,"{ \"opstatus\" : \"ok\", \"measure\" : %d.%d4,\"type\" : \"temperature\" }\n ",d1,d2);
-			//sprintf(response,"{ \"session\" : %d , \"opstatus\" : \"ok\", \"measure\" : %d.%d4,\"type\" : \"temperature\" }\n ",session,d1,d2);
+				int d1 = temperature;            // Get the integer part (678).
+				float f2 = temperature - d1;     // Get fractional part (678.0123 - 678 = 0.0123).
+				int d2 = trunc(f2 * 10000);   // Turn into integer (123).
+				// Print as parts, note that you need 0-padding for fractional bit.
+				// Since d1 is 678 and d2 is 123, you get "678.0123".
+				sprintf(response,"{ \"opstatus\" : \"ok\", \"measure\" : %d.%d4,\"type\" : \"temperature\" }\n ",d1,d2);
+				//sprintf(response,"{ \"session\" : %d , \"opstatus\" : \"ok\", \"measure\" : %d.%d4,\"type\" : \"temperature\" }\n ",session,d1,d2);
+				VCP_write(&response,256);
+			}
+			break;
+		default:
+			//Nel caso arrivi un comando non conosciuto
+			sprintf(response,"{ \"opstatus\" : \"err\" , \"code\" : 1 }\n");
 			VCP_write(&response,256);
-		}else{
-			//Nel caso arrivi un ID da cui non si può leggere
 			return 1;
-		}
-	}else{
-		//Nel caso arrivi un comando non conosciuto
-		sprintf(response,"{ \"opstatus\" : \"err\" , \"code\" : 1 }");
-		VCP_write(&response,256);
-		return 1;
 	}
-  memset(response,'\0',256);
-  return 0;
+	memset(response,'\0',256);
+	return 0;
 }
 
 uint8_t isLoop(){

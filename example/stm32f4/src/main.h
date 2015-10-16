@@ -32,7 +32,7 @@
 
 /* Commenad Typedef -----------------------*/
 typedef struct Comand{
-	char name[10];
+	int name;
 	int ID;
 }Comand;
 
@@ -64,6 +64,13 @@ ADC_HandleTypeDef hadc1;
 
 /* Constant define ------------------------*/
 #define TESTING
+// Command
+#define ON   0
+#define OFF  1
+#define READ 2
+// Risposte
+#define OK  0
+#define ERR 1
 
 ///* Use parsing function -------------------*/
 //static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {

@@ -117,44 +117,44 @@ int execComand(Comand received){
 		case C_ON :
 			if(received.ID == 3){
 				BSP_LED_On(LED3);
-				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				sprintf(response,"{ \"opstatus\" : \"ok\ , \"id\" : %d }\n",received.ID);
 				VCP_write(&response,256);
 			}
 			if(received.ID == 4){
 				BSP_LED_On(LED4);
-				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				sprintf(response,"{ \"opstatus\" : \"ok\ , \"id\" : %d }\n",received.ID);
 				VCP_write(&response,256);
 			}
 			if(received.ID == 5){
 				BSP_LED_On(LED5);
-				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				sprintf(response,"{ \"opstatus\" : \"ok\ , \"id\" : %d }\n",received.ID);
 				VCP_write(&response,256);
 			}
 			if(received.ID == 6){
 				BSP_LED_On(LED6);
-				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				sprintf(response,"{ \"opstatus\" : \"ok\ , \"id\" : %d }\n",received.ID);
 			  VCP_write(&response,256);
 			}
 			break;
 		case C_OFF :
 			if(received.ID == 6) {
 				BSP_LED_Off(LED6);
-				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				sprintf(response,"{ \"opstatus\" : \"ok\ , \"id\" : %d }\n",received.ID);
 				VCP_write(&response,256);
 			}
 			if(received.ID == 5){
 				BSP_LED_Off(LED5);
-				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				sprintf(response,"{ \"opstatus\" : \"ok\ , \"id\" : %d }\n",received.ID);
 				VCP_write(&response,256);
 			}
 			if(received.ID == 4){
 				BSP_LED_Off(LED4);
-				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				sprintf(response,"{ \"opstatus\" : \"ok\ , \"id\" : %d }\n",received.ID);
 				VCP_write(&response,256);
 			}
 			if(received.ID == 3) {
 				BSP_LED_Off(LED3);
-				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
+				sprintf(response,"{ \"opstatus\" : \"ok\ , \"id\" : %d }\n",received.ID);
 				VCP_write(&response,256);
 			}
 			break;

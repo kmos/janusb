@@ -56,23 +56,19 @@ var startled3 = false;
 var startled4 = false;
 var startled5 = false;
 var startled6 = false;
-var bitrateTimer = null;
-var spinner = null;
 
-var audioenabled = false;
-var videoenabled = false;
 
 /***MESSAGGI JSON***/
-var sens_a = { "command": 2, "id": 1 };
-var sens_t = { "command": 2, "id": 2 };
-var led3_on = { "command": 0, "id": 3 };
-var led3_off = { "command": 1, "id": 3 };
-var led4_on = { "command": 0, "id": 4 };
-var led4_off = { "command": 1, "id": 4 };
-var led5_on = { "command": 0, "id": 5 };
-var led5_off = { "command": 1, "id": 5 };
-var led6_on = { "command": 0, "id": 6 };
-var led6_off = { "command": 1, "id": 6 };
+var sens_a = { "command": 2, "id": 1 }; //read accelerometer
+var sens_t = { "command": 2, "id": 2 }; //read temperature
+var led3_on = { "command": 0, "id": 3 }; //on l3
+var led3_off = { "command": 1, "id": 3 }; //off l3
+var led4_on = { "command": 0, "id": 4 }; //on l4
+var led4_off = { "command": 1, "id": 4 }; //off l4
+var led5_on = { "command": 0, "id": 5 }; //on l5
+var led5_off = { "command": 1, "id": 5 }; //off l5
+var led6_on = { "command": 0, "id": 6 }; //on l6
+var led6_off = { "command": 1, "id": 6 }; //off l6
 
 
 $(document).ready(function() {

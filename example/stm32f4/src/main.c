@@ -205,7 +205,7 @@ int execComand(Comand received){
 			break;
 		default:
 			//Nel caso arrivi un comando non conosciuto
-			sprintf(response,"{ \"opstatus\" : \"err\" , \"code\" : 1 }");
+			sprintf(response,"{ \"opstatus\" : \"err\" , \"code\" : 1 }\n");
 			VCP_write(&response,256);
 			return 1;
 	}

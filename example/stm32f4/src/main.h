@@ -65,9 +65,9 @@ ADC_HandleTypeDef hadc1;
 /* Constant define ------------------------*/
 #define TESTING
 // Command
-#define ON   0
-#define OFF  1
-#define READ 2
+#define C_ON   0
+#define C_OFF  1
+#define C_READ 2
 // Risposte
 #define OK  0
 #define ERR 1

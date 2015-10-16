@@ -69,11 +69,12 @@ int  parsing (Comand *received)
 	jsmn_parser parser;
 	jsmntok_t tokens[256];
 	/*Use variable */
-	char *store;
+	char store[20];
 	int t_length = 0;
 	/*Initializze variable */
-	memset(received->name,'\0',10);
-	received->ID = 0;
+	received->name 	= 0;
+	received->ID 	= 0;
+	memset(store,"\0",20);
 	/*Initializze parse */
 	jsmn_init(&parser);
 	//Parse the string
@@ -87,26 +88,19 @@ int  parsing (Comand *received)
 		switch(tokens[i].type){
 			case JSMN_STRING:
 				t_length = tokens[i].end-tokens[i].start;
-				store = malloc(sizeof(char)*t_length);
 				strncpy(store,&request[tokens[i].start],t_length);
-				/* Riconosce la sessione */
-				// if(strcmp(store,"session",t_length) == 0){
-				// 	memset(store,'\0',tokens[i+1].end-tokens[i+1].start);
-				// 	strncpy(store,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
-				// 	session = atoi(store);
-				// }
+
 				if(strncmp(store,"command",t_length) == 0){
-					memset(store,'\0',tokens[i+1].end-tokens[i+1].start);
+					memset(store,"\0",20);
 					strncpy(store,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
 					received->name = atoi(store);
 				}else if(strncmp(store,"id",t_length) == 0){
-					memset(store,'\0',tokens[i+1].end-tokens[i+1].start);
+					memset(store,"\0",t_length);
 					strncpy(store,&request[tokens[i+1].start],tokens[i+1].end-tokens[i+1].start);
 					received->ID = atoi(store);
 				}else{
 					//Quando mi arriva qualcosa di inateso
 				}
-				free(store);
 				i++;
 				break;
 			case JSMN_PRIMITIVE: break;
@@ -120,7 +114,7 @@ int  parsing (Comand *received)
 int execComand(Comand received){
 	memset(response,'\0',256);
 	switch(received.name){
-		case ON :
+		case C_ON :
 			if(received.ID == 3){
 				BSP_LED_On(LED3);
 				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
@@ -142,7 +136,7 @@ int execComand(Comand received){
 			  VCP_write(&response,256);
 			}
 			break;
-		case OFF :
+		case C_OFF :
 			if(received.ID == 6) {
 				BSP_LED_Off(LED6);
 				sprintf(response,"{ \"opstatus\" : \"ok\" }\n");
@@ -164,7 +158,7 @@ int execComand(Comand received){
 				VCP_write(&response,256);
 			}
 			break;
-		case READ :
+		case C_READ :
 			if(received.ID == 1){
 				/*Initializzae local variable*/
 				int16_t pos[3];
@@ -208,6 +202,7 @@ int execComand(Comand received){
 			sprintf(response,"{ \"opstatus\" : \"err\" , \"code\" : 1 }\n");
 			VCP_write(&response,256);
 			return 1;
+			break;
 	}
 	memset(response,'\0',256);
 	return 0;

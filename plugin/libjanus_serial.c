@@ -401,6 +401,7 @@ void janus_serial_destroy(void) {
   g_async_queue_unref(messages);
   messages = NULL;
   sessions = NULL;
+  close(fd);
 
   g_atomic_int_set(&initialized, 0);
   g_atomic_int_set(&stopping, 0);
@@ -638,9 +639,9 @@ static void *janus_serial_handler(void *data) {
 
     //Se non ci sono errori reinoltro il pacchetto su porta COM
     //Questa cosa di aprire e chiudere lo stream ogni volta la devo risolvere per forza
-    if(fd = open(portname,O_RDWR | O_NOCTTY | O_NONBLOCK)){
-      JANUS_LOG(LOG_INFO, "stream aperto - Janus Serial\n");
-    }
+    // if(fd = open(portname,O_RDWR | O_NOCTTY | O_NONBLOCK)){
+    //   JANUS_LOG(LOG_INFO, "stream aperto - Janus Serial\n");
+    // }
     tcsetattr(fd, TCSANOW, &toptions);
 
     tcflush(fd,TCIFLUSH);
@@ -663,7 +664,7 @@ static void *janus_serial_handler(void *data) {
 
     tcflush(fd, TCIOFLUSH);
     //Odio chiudere sempre lo stream
-    close(fd);
+    //close(fd);
     
     int res = gateway->push_event(msg->handle, &janus_serial_plugin, NULL, response, NULL, NULL);
     janus_serial_message_free(msg);

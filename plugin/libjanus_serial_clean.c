@@ -38,6 +38,48 @@
 #define JANUS_SERIAL_ERROR_INVALID_JSON    412
 #define JANUS_SERIAL_ERROR_INVALID_ELEMENT 413
 
+/* Use Variable */
+char *portname = "/dev/ttyACM0";
+int fd;
+struct termios toptions;
+
+/* Useful stuff */
+static volatile gint initialized = 0, stopping = 0;
+static janus_callbacks *gateway = NULL;
+//Thread 
+static GThread *handler_thread;
+static GThread *watchdog;
+//Mesage queue
+static GAsyncQueue *messages = NULL;
+//Hash Table
+static GHashTable *sessions;
+//List
+static GList *old_sessions;
+//Mutex
+static janus_mutex sessions_mutex;
+
+
+//Messaggio JSON di sessione
+typedef struct janus_serial_message {
+  janus_plugin_session *handle;
+  char *transaction;
+  char *message;
+  char *sdp_type;
+  char *sdp;     
+} janus_serial_message;
+
+
+/*Plugin session typedef */
+typedef struct janus_serial_session {
+  //Puttana Eva
+  janus_plugin_session *handle;
+  //uint64_t bitrate;
+  
+  guint16 slowlink_count;
+  volatile gint hangingup; /*Indica lo stato in cui la sessione si è chiusa e si prova un riaggancio */
+  gint64 destroyed; /* Time at which this session was marked as destroyed */
+} janus_serial_session;
+
 /* Plugin methods */
 janus_plugin *create(void);
 int janus_serial_init(janus_callbacks *callback, const char *config_path);
@@ -92,50 +134,6 @@ janus_plugin *create(void) {
   JANUS_LOG(LOG_VERB, "%s created!\n", JANUS_SERIAL_NAME);
   return &janus_serial_plugin;
 }
-
-/* Use Variable */
-char *portname = "/dev/ttyACM0";
-int fd;
-struct termios toptions;
-
-/* Useful stuff */
-static volatile gint initialized = 0, stopping = 0;
-static janus_callbacks *gateway = NULL;
-//Thread 
-static GThread *handler_thread;
-static GThread *watchdog;
-//Mesage queue
-static GAsyncQueue *messages = NULL;
-//Hash Table
-static GHashTable *sessions;
-//List
-static GList *old_sessions;
-//Mutex
-static janus_mutex sessions_mutex;
-
-
-//Messaggio JSON di sessione
-typedef struct janus_serial_message {
-  janus_plugin_session *handle;
-  char *transaction;
-  char *message;
-  char *sdp_type;
-  char *sdp;     
-} janus_serial_message;
-
-
-/*Plugin session typedef */
-typedef struct janus_serial_session {
-  //Puttana Eva
-  janus_plugin_session *handle;
-  //uint64_t bitrate;
-  
-  guint16 slowlink_count;
-  volatile gint hangingup; /*Indica lo stato in cui la sessione si è chiusa e si prova un riaggancio */
-  gint64 destroyed;	/* Time at which this session was marked as destroyed */
-} janus_serial_session;
-
-
 
 void janus_serial_message_free(janus_serial_message *msg) {
   if(!msg)
@@ -378,12 +376,6 @@ int janus_serial_init(janus_callbacks *callback, const char *config_path) {
     JANUS_LOG(LOG_ERR, "Got error %d (%s) trying to launch the serial handler thread...\n", error->code, error->message ? error->message : "??");
     return -1;
   }
-  /* Launch the thread that will handle incoming message from Microcontroller */
-  listener = g_thread_try_new("janus serial listener", janus_serial_listener, NULL, &error);
-  if(error != NULL){
-    g_atomic_init_set(&initialized, 0);
-    JANUS_LOG(LOG_ERR, "Got error %d (%s) trying to launch the serial listener thread...\n", error->code, error->message ? error->message: "??");
-  }  
 
   return 0;
 }
@@ -674,7 +666,6 @@ static void *janus_serial_handler(void *data) {
     close(fd);
     
     int res = gateway->push_event(msg->handle, &janus_serial_plugin, NULL, response, NULL, NULL);
-    g_free(event_text);
     janus_serial_message_free(msg);
     continue;
   		

@@ -204,92 +204,6 @@ int janus_serial_init(janus_callbacks *callback, const char *config_path) {
   }
 
   /* Read configuration */
-  // char filename[255];
-  // g_snprintf(filename, 255, "%s/%s.cfg", config_path, JANUS_SERIAL_PACKAGE);
-  // JANUS_LOG(LOG_VERB, "Configuration file: %s\n", filename);
-  // janus_config *config = janus_config_parse(filename);
-  // if(config != NULL)
-  // janus_config_print(config);
-	
-  // sessions = g_hash_table_new(NULL, NULL);
-  // janus_mutex_init(&sessions_mutex);
-  // messages = g_async_queue_new_full((GDestroyNotify) janus_serial_message_free);
-  // /* This is the callback we'll need to invoke to contact the gateway */
-  // gateway = callback;
-
-  // /*Parse configuration */
-  // if(config != NULL){
-
-  //   /* Set up the control structure */
-  //   struct termios toptions;
-
-  //   /* Get currently set options for the tty */
-  //   tcgetattr(fd, &toptions);
-
-  //   /* set custom options */
-  //   janus_config_item *baudrate = janus_config_get_item_drilldown(config, "general","baudrate");  
-  //   if(baudrate && baudrate->value){
-  //     //set baudrate
-  //     cfsetispeed(&toptions,B9600);
-  //     cfsetospeed(&toptions,B9600);
-  //   }
-  //   janus_config_item *vmin = janus_config_get_item_drilldown(config, "general", "vmin");
-  //   if(vmin && vmin->value){
-  //     //set vmin
-  //     toptions.c_cc[VMIN] = 12;
-      
-  //   }
-  //   janus_config_item *vtime = janus_config_get_item_drilldown(config, "general", "vtime");
-  //   if(vtime && vtime->value){
-  //     //set vtime
-  //     toptions.c_cc[VTIME] = 0;
-  //   }
-  //   janus_config_item *portname = janus_config_get_item_drilldown(config, "general","portname");
-    
-  //   /* 8 bits, no parity, no stop bits */
-  //   toptions.c_cflag &= ~PARENB;
-  //   toptions.c_cflag &= ~CSTOPB;
-  //   toptions.c_cflag &= ~CSIZE;
-  //   toptions.c_cflag |= CS8;
-  //   /* no hardware flow control */
-  //   toptions.c_cflag &= ~CRTSCTS;
-  //   /* enable receiver, ignore status lines */
-  //   toptions.c_cflag |= CREAD | CLOCAL;
-  //   /* disable input/output flow control, disable restart chars */
-  //   toptions.c_iflag &= ~(IXON | IXOFF | IXANY);
-  //   /* disable canonical input, disable echo,
-  //   disable visually erase chars,
-  //   disable terminal-generated signals */
-  //   toptions.c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-  //   /* disable output processing */
-  //   toptions.c_oflag &= ~OPOST;
-
-  //   /* commit the options */
-  //   tcsetattr(fd, TCSANOW, &toptions);
-
-  //   // init part
-  //   /* Open the file descriptor in non-blocking mode */
-  //   if(portname && portname->value){
-  //     //g_strdup(portname->value)
-  //     if(fd = open(g_strdup(portname->value),O_RDWR | O_NOCTTY | O_NONBLOCK)){
-  //       //printf("stream aperto\n");
-  //       //JANUS_LOG(LOG_INFO, "stream aperto - Janus Serial");
-  //     }else{
-  //       //printf("errora nell'apertura dello stream\n");
-  //       //JANUS_LOG(LOG_INFO, "errore nell'apertura dello stream\n");
-  //       return 0;
-  //     }
-  //     /* Wait for the hardware interface to reset */
-  //     usleep(1000*1000);
-
-  //     /* Flush anything already in the serial buffer */
-  //     tcflush(fd, TCIFLUSH);
-  //   }
-  //   janus_config_destroy(config);
-  //   config = NULL;
-  // }
-
-  /* Read configuration */
   char filename[255];
   g_snprintf(filename, 255, "%s/%s.cfg", config_path, JANUS_SERIAL_PACKAGE);
   JANUS_LOG(LOG_VERB, "Configuration file: %s\n", filename);
@@ -354,7 +268,7 @@ int janus_serial_init(janus_callbacks *callback, const char *config_path) {
   /* Wait for the Arduino to reset */
   usleep(1000*1000);
 
-  close(fd);
+  //close(fd);
   /* Flush anything already in the serial buffer */
   tcflush(fd, TCIOFLUSH);
   
@@ -449,11 +363,6 @@ void janus_serial_create_session(janus_plugin_session *handle, int *error) {
     return;
   }
   session->handle = handle;
-  // session->has_audio = FALSE;
-  // session->has_video = FALSE;
-  // session->audio_active = TRUE;
-  // session->video_active = TRUE;
-  // session->bitrate = 0;	/* No limit */
   session->destroyed = 0;
   g_atomic_int_set(&session->hangingup, 0);
   handle->plugin_handle = session;
@@ -637,11 +546,6 @@ static void *janus_serial_handler(void *data) {
       goto error;
     }
 
-    //Se non ci sono errori reinoltro il pacchetto su porta COM
-    //Questa cosa di aprire e chiudere lo stream ogni volta la devo risolvere per forza
-    // if(fd = open(portname,O_RDWR | O_NOCTTY | O_NONBLOCK)){
-    //   JANUS_LOG(LOG_INFO, "stream aperto - Janus Serial\n");
-    // }
     tcsetattr(fd, TCSANOW, &toptions);
 
     tcflush(fd,TCIFLUSH);
@@ -655,17 +559,14 @@ static void *janus_serial_handler(void *data) {
     strcat(request,"\n");
     //Write on serial port
     if(write(fd,request,strlen(request)) == -1){
-      JANUS_LOG(LOG_INFO,"errore nella scrittura su seriale");
+      JANUS_LOG(LOG_INFO,"errore nella scrittura su seriale\n");
     }
     tcdrain(fd); 
 
     //Active wait for MCU answer
     while(read(fd,&response,256) == -1){}
-
     tcflush(fd, TCIOFLUSH);
-    //Odio chiudere sempre lo stream
-    //close(fd);
-    
+        
     int res = gateway->push_event(msg->handle, &janus_serial_plugin, NULL, response, NULL, NULL);
     janus_serial_message_free(msg);
     continue;

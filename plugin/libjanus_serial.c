@@ -1041,7 +1041,7 @@ static void *janus_serial_handler(void *data) {
         //usleep(1000*1000);
         
         char resp[] = "{ \"result_serial\" : \"ok\"}";
-        int res = gateway->push_event(msg->handle, &janus_serial_plugin, NULL, resp, NULL, NULL);
+        int res = gateway->push_event(msg->handle, &janus_serial_plugin, NULL, response, NULL, NULL);
 	      //JANUS_LOG(LOG_VERB, "  >> %d (%s)\n", ret, janus_get_api_error(ret));
       } else {
         /* Forward the same offer to the gateway, to start the echo test */

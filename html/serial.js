@@ -56,11 +56,7 @@ var startled3 = false;
 var startled4 = false;
 var startled5 = false;
 var startled6 = false;
-var bitrateTimer = null;
-var spinner = null;
 
-var audioenabled = false;
-var videoenabled = false;
 
 /***MESSAGGI JSON***/
 var sens_a = { "command": 2, "id": 1 };

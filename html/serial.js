@@ -229,7 +229,9 @@ $('#clear').click(function(){
 									 //var ok="ok";
 									 //if(obj.result_serial==ok)
 									 //$('#result').append(formatted+" -> "+obj['result_serial']+"\n");
-									 $('#result').append(formatted+" -> "+obj.result_serial+"\n");
+									 
+									 //$('#result').append(formatted+" -> "+obj.result_serial+"\n");
+									 $('#result').append(formatted+" -> "+text+"\n");
 									 //else
 									 //$('#result').append(formatted+" -> "+obj.result_serial+"\n");
 									

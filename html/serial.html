@@ -53,10 +53,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#">About</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
+                        <a href="https://github.com/kmos/janusb">GitHub Page</a>
                     </li>
                 </ul>
             </div>
@@ -70,110 +67,101 @@
 
         <!-- Jumbotron Header -->
         <header class="jumbotron hero-spacer">
-            <h1>Welcome to JanUsb Project</h1>
-            <p>...Description...</p>
-            <p>
-<button class="btn btn-default" autocomplete="off" id="start">Start</button>
+            <h1>Welcome to JanUsb Project </h1>
+            <br>
+            <p>	The "janusb" project allows the communication between STM32 microcontroller and a web page.
+				<div>
+				janusb is able to command the STM32 (on/off leds) and to show the data acquired from it (temperature and accelerometer).
+				</div>
+				The communications is based on JSON message exchange and it is made possible by Janus WebRTC Gateway © Meetecho 2015.
+</p>
+            <p align ="center">
+<button class="btn btn-default " autocomplete="off" id="start">Start Session</button>
             </p>
+  
         </header>
 
-  <hr>
+  
 
-					<div class="row hide" align="center"id="texta">
-						<textarea name="Receive TextBox"  cols="142" rows="5" id="result" wrap="hard"> </textarea>
+					<div class="row hide" id="texta" align="center">
+						<hr>
+						<textarea name="Receive TextBox"  cols="60" rows="5" id="result" wrap="hard"> </textarea>
 						</div>
 						<br>
 						<div align="center">
-						<button class="btn btn-default hide" type=”submit” id="clear">Clear</button>			
+						<button class="btn btn-default hide" type=”submit” id="clear">Clear</button>
+						</div>			
 					</div>
                 </div>
             </div>
         </div>
         
-        <hr>
+        
+
         <!-- Title -->
         <div>
 			<div class="row hide" id="features">
+				<hr>
 				<div class="col-lg-12">
 					<h3>&nbsp;&nbsp;&nbsp;Features</h3>
 				</div>
 			</div>
         </div>
-        <!-- /.row -->
-
-<!-- OLD BUTTON -->
-
-        <!-- Page Features -->
-<!--        <div class="row text-center">
-            <div class="col-md-3 col-sm-6 hero-feature">
-                <div class="thumbnail">
-                    <img src="http://placehold.it/800x500" alt="">
-                    <div class="caption">
-                        <legend>Turn on/off Led</legend>
-                        <p>This feature allow to turn on/off a Led</p>
-                        <p>
-                            <button class="btn btn-danger" autocomplete="off" id="led">Led On</button> 
-                        </p>
-                    </div>
-                </div>
-            </div>
--->
-
-
-            <div class="col-md-2 col-sm-6 hero-feature hide" id="sensordiv">
+	<!-- /.row -->
+		
+		
+            <div class="col-lg-3 col-sx-3 col-sm-3 col-md-3 hero-feature hide"id="sensordiv">
                 <div class="thumbnail">
                     <div class="caption">
-                       <!--<h3>Send Json</h3>
-                        <p>This feature allow to send the json</p>
-                        <p>
-                            <!--<a href="#" class="btn btn-primary">Send</a>-->
-                            
-                            <fieldset>
+                            <fieldset >
         					<legend>Sensors</legend>
-        					<p>
+        					<p align="center">
         					Accelerometer
         					&nbsp;
+        					
         					<button class="btn btn-default" type=”submit” id="accel">Read</button>
         					</p>
-        					<p>
+        					<p align="center">
+								<input type="text" id="textacc"><br>
+        					</p>
+        					<hr>
+        					<p align="center">
         					Temperature
         					&nbsp;&nbsp;&nbsp;
         					<button class="btn btn-default" type=”submit” id="temp">Read</button>
+    						</p align="center">
+    						<p align="center">
+								<input type="text" id="textemp"><br>
     						</p>
     						</fieldset>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-3 col-sm-6 hero-feature hide" id="lediv">
+            <div class="col-lg-3 col-sx-3 col-sm-3 col-md-3 hero-feature hide" id="lediv">
                 <div class="thumbnail">
                     <div class="caption" >
                         
     						
     						<fieldset>
         					<legend>LED</legend>
-        					
-        					<!--Led_3 <input type="checkbox" name="led3"  id="l3"/>-->
-								&nbsp;&nbsp;LED 3&nbsp;<button class="btn btn-danger" autocomplete="off" id="l3">OFF</button>
-							
-        					<!--Led_4 <input type="checkbox" name="led4"  id="l4"/>-->
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								LED 4&nbsp;<button class="btn btn-danger" autocomplete="off" id="l4">OFF</button>
-    						
-    						</fieldset>
-    						<br>
-    						<fieldset>
-        					<p>
-        					
-        					<!--Led_5 <input type="checkbox" name="led5" id="l5"/>-->
-								&nbsp;
-								LED 5&nbsp;<button class="btn btn-danger" autocomplete="off" id="l5">OFF</button>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        					<!--Led_6 <input type="checkbox" name="led6" id="l6"/>-->
-								LED 6&nbsp;<button class="btn btn-danger" autocomplete="off" id="l6">OFF</button>
+        					<p align="center">
+        					<!--Led_3 button-->
+								LED 3&nbsp;<button class="btn btn-default" autocomplete="off" id="l3">OFF</button>							
+        					<!--Led_4 button-->								
+								LED 4&nbsp;<button class="btn btn-default" autocomplete="off" id="l4">OFF</button>
     						</p>
+    						</fieldset>
+    						
+    						<hr>
+    						
+    						<fieldset>
+        					<p align="center">
+								<!--Led_5 button-->
+								LED 5&nbsp;<button class="btn btn-default" autocomplete="off" id="l5">OFF</button>
+								<!--Led_6 button-->
+								LED 6&nbsp;<button class="btn btn-default" autocomplete="off" id="l6">OFF</button>
+    						</p>	
     						</fieldset>
 							
                     </div>
@@ -183,7 +171,7 @@
 
             
 
-        </div>
+        
 		
         <!-- /.row -->
 		<div class="row">

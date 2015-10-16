@@ -111,106 +111,92 @@ $(document).ready(function() {
 									$('#details').remove();
 									serial = pluginHandle;
 									console.log("Plugin attached! (" + serial.getPlugin() + ", id=" + serial.getId() + ")");
-									// Tasto led 
+									// Show features 
 									$('#features').removeClass('hide').show();
 									$('#clear').removeClass('hide').show();
 									$('#sensordiv').removeClass('hide').show();
 									$('#lediv').removeClass('hide').show();
 									$('#texta').removeClass('hide').show();
-				$('#led').click(function() {
-			
-			startled = !startled;			
-			if(startled)
-						$('#led').html("Led On").removeClass("btn-success").addClass("btn-danger");
-			else
-						$('#led').html("Led Off").removeClass("btn-danger").addClass("btn-success");
-		var body = { "audio": true, "video": true };
-		console.log("Sending message (" + JSON.stringify(body) + ")");
-		serial.send({"message": body});
-		   });	
-
-/*************CODICE INVIO JSON**************/
-		
-		$('#accel').click(function() {
-			
-			//$('#accel').html("Reading...").removeClass("btn-default").addClass("btn-primary");
-			serial.send({"message": sens_a});
-		   });	
-
-		$('#temp').click(function() {
-
-			//$('#temp').html("Reading...").removeClass("btn-default").addClass("btn-primary");
-			serial.send({"message": sens_t});
-		   });	
-
-
-		$('#l3').click(function(){
-			startled3 = !startled3;			
-			if(startled3){
-						$('#l3').html("ON").removeClass("btn-danger").addClass("btn-success");
-						serial.send({"message": led3_on});
-					}
-			else{
+									
 				
-						$('#l3').html("OFF").removeClass("btn-success").addClass("btn-danger");
-						serial.send({"message": led3_off});
-				}
-		});			
-		
-		$('#l4').click(function(){
-			startled4 = !startled4;			
-			if(startled4){
-						$('#l4').html("ON").removeClass("btn-danger").addClass("btn-success");
-						serial.send({"message": led4_on});
-					}
-			else{
-				
-						$('#l4').html("OFF").removeClass("btn-success").addClass("btn-danger");
-						serial.send({"message": led4_off});
-				}
-		});	
-		
-		$('#l5').click(function(){
-			startled5 = !startled5;			
-			if(startled5){
-						$('#l5').html("ON").removeClass("btn-danger").addClass("btn-success");
-						serial.send({"message": led5_on});
-					}
-			else{
-				
-						$('#l5').html("OFF").removeClass("btn-success").addClass("btn-danger");
-						serial.send({"message": led5_off});
-				}
-		});	
+					/*************CODICE INVIO JSON**************/
+									//accelerometer
+									$('#accel').click(function() {
+										serial.send({"message": sens_a});
+									});	
+									
+									//temperature
+									$('#temp').click(function() {
+										serial.send({"message": sens_t});
+									});	
 
-		$('#l6').click(function(){
-			startled6 = !startled6;			
-			if(startled6){
-						$('#l6').html("ON").removeClass("btn-danger").addClass("btn-success");
-						serial.send({"message": led6_on});
-					}
-			else{
-				
-						$('#l6').html("OFF").removeClass("btn-success").addClass("btn-danger");
-						serial.send({"message": led6_off});
-				}
-		});	
+									//Led 3
+									$('#l3').click(function(){
+										startled3 = !startled3;			
+										if(startled3){	
+											$('#l3').html("ON").removeClass("btn-default").addClass("btn-warning");
+											serial.send({"message": led3_on});
+										}
+										else{											
+											$('#l3').html("OFF").removeClass("btn-warning").addClass("btn-default");
+											serial.send({"message": led3_off});											
+										}
+									});
+												
+									//Led 4		
+									$('#l4').click(function(){
+										startled4 = !startled4;			
+										if(startled4){
+											$('#l4').html("ON").removeClass("btn-default").addClass("btn-success");
+											serial.send({"message": led4_on});
+										}
+										else{				
+											$('#l4').html("OFF").removeClass("btn-success").addClass("btn-default");
+											serial.send({"message": led4_off});
+										}
+									});
+										
+									//Led 5		
+									$('#l5').click(function(){
+										startled5 = !startled5;			
+										if(startled5){
+											$('#l5').html("ON").removeClass("btn-default").addClass("btn-danger");
+											serial.send({"message": led5_on});
+										}
+										else{
+											$('#l5').html("OFF").removeClass("btn-danger").addClass("btn-default");
+											serial.send({"message": led5_off});
+										}
+									});	
+									
+									//Led 6
+									$('#l6').click(function(){
+										startled6 = !startled6;			
+										if(startled6){
+											$('#l6').html("ON").removeClass("btn-default").addClass("btn-primary");
+											serial.send({"message": led6_on});
+										}
+										else{				
+											$('#l6').html("OFF").removeClass("btn-primary").addClass("btn-default");
+											serial.send({"message": led6_off});
+										}
+									});	
       
-							
-									
-									
-									$('#start').removeAttr('disabled').html("Stop")
+									//Quando si preme "stop session".....
+									$('#start').removeAttr('disabled').html("Stop Session")
 										.click(function() {
 											$(this).attr('disabled', true);
-											clearInterval(bitrateTimer);
 											janus.destroy();
 										});
 										
-$('#clear').click(function(){
-	
-	$('#result').text('');
-});
-								}, // end success pluginhandler
+									//Tasto Clear	
+									$('#clear').click(function(){
+										$('#result').text('');
+										$('#textacc').val('');
+										$('#textemp').val('');
+										
+									});
+								}, // end success pluginhandler 
 								
 								
 								error: function(error) {
@@ -218,23 +204,22 @@ $('#clear').click(function(){
 									bootbox.alert("Error attaching plugin... " + error);
 								},
 								
-								onmessage: function(msg, jsep) {
+								onmessage: function(msg) {
 									console.log(" ::: Got a message :::");
 									console.log(JSON.stringify(msg));
-									//window.alert(JSON.stringify(msg));
 									var text = JSON.stringify(msg);
 									var obj = JSON.parse(text);
 									var now = new Date(Date.now());
 									var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-									 //var ok="ok";
-									 //if(obj.result_serial==ok)
-									 //$('#result').append(formatted+" -> "+obj['result_serial']+"\n");
-									 $('#result').append(formatted+" -> "+obj.result_serial+"\n");
-									 //else
-									 //$('#result').append(formatted+" -> "+obj.result_serial+"\n");
-									
+									var tac="accelerometer";
+									var tem="temperature";
+									$('#result').append(formatted+" -> "+text+"\n");
+									if(obj.type ==tac)
+										$('#textacc').val(obj.measure);
+									else if(obj.type ==tem)
+										$('#textemp').val(obj.measure);
 								
-								},
+									},
 								
 							}); // end janus attach
 					},

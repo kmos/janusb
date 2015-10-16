@@ -7,7 +7,7 @@ Janusb provides a very simple interface to the low level serial port code necess
 *****
 
 
-Janususb, Why?
+JanUsb, Why?
 ================
 Why not! 
 
@@ -45,7 +45,9 @@ To Use
 
 #### Html:
 
-After the installation, you need to put the html example in your webserver dir.
+The "janusb" project allows the communication between STM32 microcontroller and a web page.
+janusb is able to command the STM32 (on/off leds) and to show the data acquired from it (temperature and accelerometer).
+The communications is based on JSON message exchange and it is made possible by Janus WebRTC Gateway © Meetecho 2015.
 
 #### Stm32f4Discovery:
 

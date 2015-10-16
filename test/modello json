@@ -22,4 +22,9 @@ Answer to server
 	"opstatus" : "Ok"/"Er",
 	"measure"  : misura(float/intero) (in caso di errore si può mettere un codice)
 	"type"	  : "celsius"/"kelvin","XYZ"
+
+  
+
+    { "opstatus" : "ok", "measure" : [ -7,4,1005],"type" : "accelerometer" }
+
 }
